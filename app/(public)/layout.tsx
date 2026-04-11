@@ -1,6 +1,6 @@
 // app/(public)/layout.tsx
 
-import { Navbar } from '@/components/public-section/navbar';
+import { Navbar, NavbarBottomMobile } from '@/components/public-section/navbar';
 
 export default function PublicLayout({
   children,
@@ -10,7 +10,8 @@ export default function PublicLayout({
   return (
     <>
       <Navbar />
-      <main>{children}</main>
+      <main className="pt-16 pb-20 md:pb-0">{children}</main>
+      <NavbarBottomMobile />
     </>
   );
 }

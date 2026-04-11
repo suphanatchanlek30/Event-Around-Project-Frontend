@@ -4,6 +4,7 @@
 
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
+import { useScrollDirection } from '@/hooks/useScrollDirection';
 import { NavbarLogo } from './navbar-logo';
 import { NavbarMenu } from './navbar-menu';
 import { NavbarProfile } from './navbar-profile';
@@ -13,6 +14,7 @@ import { NAVBAR_HEIGHT, NAVBAR_PADDING } from './constants';
 export const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+  const isVisible = useScrollDirection();
 
   const isActive = (href: string) => pathname === href;
 
@@ -21,7 +23,11 @@ export const Navbar = () => {
   };
 
   return (
-    <header className={`${NAVBAR_HEIGHT} bg-surface border-b border-border`}>
+    <header
+      className={`fixed top-0 left-0 right-0 ${NAVBAR_HEIGHT} bg-surface border-b border-border z-40 transition-transform duration-300 ease-out ${
+        isVisible ? 'translate-y-0' : '-translate-y-full'
+      }`}
+    >
       <div
         className={`${NAVBAR_HEIGHT} ${NAVBAR_PADDING} flex items-center justify-between mx-auto max-w-7xl`}
       >

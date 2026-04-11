@@ -5,5 +5,7 @@ export { NavbarLogo } from './navbar-logo';
 export { NavbarMenu } from './navbar-menu';
 export { NavbarProfile } from './navbar-profile';
 export { NavbarMobile } from './navbar-mobile';
+export { NavbarBottomMobile } from './navbar-bottom-mobile';
+export { NavbarBottomMobileItem } from './navbar-bottom-mobile-item';
 export * from './types';
 export * from './constants';

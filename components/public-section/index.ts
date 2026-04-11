@@ -1,3 +1,3 @@
 // components/public-section/index.ts
 
-export { Navbar } from './navbar';
+export { Navbar, NavbarBottomMobile } from './navbar';

@@ -1,5 +1,7 @@
 // components/public-section/navbar/types.ts
 
+import { IconType } from 'react-icons';
+
 export interface NavItem {
   label: string;
   href: string;
@@ -22,4 +24,11 @@ export interface NavbarProfileProps {
 export interface NavbarMobileProps {
   isOpen: boolean;
   onToggle: () => void;
+}
+
+export interface NavbarBottomMobileItemProps {
+  href: string;
+  label: string;
+  icon: IconType;
+  isActive: boolean;
 }
