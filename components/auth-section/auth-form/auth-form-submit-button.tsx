@@ -1,3 +1,5 @@
+// components/auth-section/auth-form/auth-form-submit-button.tsx
+
 import type { AuthFormSubmitButtonProps } from "@/components/auth-section/auth-form/types";
 
 export default function AuthFormSubmitButton({ label }: AuthFormSubmitButtonProps) {

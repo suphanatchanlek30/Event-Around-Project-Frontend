@@ -1,3 +1,5 @@
+// app/(auth)/login/page.config.ts
+
 import type { Metadata } from "next";
 
 export const LOGIN_PAGE_METADATA: Metadata = {

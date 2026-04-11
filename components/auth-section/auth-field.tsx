@@ -1,3 +1,5 @@
+// components/auth-section/auth-field.tsx
+
 import type { AuthFieldProps } from "@/components/auth-section/types";
 
 export default function AuthField({ field, id }: AuthFieldProps) {

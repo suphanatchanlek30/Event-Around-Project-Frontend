@@ -1,3 +1,5 @@
+// components/auth-section/constants/auth-config.ts
+
 import type { AuthPageConfigMap } from "@/components/auth-section/types";
 
 export const AUTH_PAGE_CONFIGS = {

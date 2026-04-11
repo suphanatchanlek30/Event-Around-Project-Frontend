@@ -1,3 +1,5 @@
+// components/auth-section/constants/auth-ui.ts
+
 import type { AuthMode } from "@/components/auth-section/types";
 
 export const AUTH_MODE_BADGE_LABEL: Record<AuthMode, string> = {

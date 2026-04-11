@@ -1,3 +1,5 @@
+// components/auth-section/auth-form/auth-form-support-row.tsx
+
 import Link from "next/link";
 
 import { AUTH_REGISTER_SUPPORT_TEXT, AUTH_REMEMBER_ME_LABEL } from "@/components/auth-section/constants/auth-ui";

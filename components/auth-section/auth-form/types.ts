@@ -1,3 +1,5 @@
+// components/auth-section/auth-form/types.ts
+
 import type { AuthHelperLink, AuthMode, AuthPageConfig } from "@/components/auth-section/types";
 
 export interface AuthFormProps {
