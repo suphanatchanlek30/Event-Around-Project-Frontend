@@ -1,3 +1,5 @@
+// app/(auth)/login/page.tsx
+
 import { AuthForm, AUTH_PAGE_CONFIGS } from "@/components/auth-section";
 import { LOGIN_PAGE_METADATA } from "@/app/(auth)/login/page.config";
 

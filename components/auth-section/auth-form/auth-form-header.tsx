@@ -1,3 +1,5 @@
+// components/auth-section/auth-form/auth-form-header.tsx
+
 import { AUTH_MODE_BADGE_LABEL } from "@/components/auth-section/constants/auth-ui";
 import type { AuthFormHeaderProps } from "@/components/auth-section/auth-form/types";
 

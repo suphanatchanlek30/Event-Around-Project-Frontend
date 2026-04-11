@@ -1,3 +1,5 @@
+// components/auth-section/auth-shell.tsx
+
 import type { AuthShellProps } from "@/components/auth-section/types";
 
 export default function AuthShell({ children }: AuthShellProps) {
