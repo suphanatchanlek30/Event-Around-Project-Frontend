@@ -1,3 +1,5 @@
+// components/auth-section/auth-form/auth-form-switch-row.tsx
+
 import Link from "next/link";
 
 import { AUTH_MODE_ACCOUNT_PROMPT } from "@/components/auth-section/constants/auth-ui";

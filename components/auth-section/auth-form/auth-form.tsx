@@ -1,3 +1,5 @@
+// components/auth-section/auth-form/auth-form.tsx
+
 import AuthField from "@/components/auth-section/auth-field";
 import AuthFormHeader from "@/components/auth-section/auth-form/auth-form-header";
 import AuthFormSubmitButton from "@/components/auth-section/auth-form/auth-form-submit-button";

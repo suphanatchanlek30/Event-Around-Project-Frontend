@@ -1,3 +1,5 @@
+// components/auth-section/types.ts
+
 import type { ReactNode } from "react";
 
 export type AuthMode = "login" | "register";
