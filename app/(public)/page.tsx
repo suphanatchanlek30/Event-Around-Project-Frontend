@@ -3,7 +3,9 @@
 import {
   CategoryFilter,
   EventsSearchFilter,
+  FeaturedEvents,
   HeroBanner,
+  UpcomingEventsSection,
 } from '@/components/public-section/home';
 
 export default function Home() {
@@ -13,6 +15,8 @@ export default function Home() {
         <HeroBanner className="w-full" />
         <EventsSearchFilter />
         <CategoryFilter />
+        <FeaturedEvents />
+        <UpcomingEventsSection />
       </div>
     </main>
   );
