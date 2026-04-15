@@ -8,7 +8,7 @@ import { FeaturedEventsProps } from './types';
 
 export const FeaturedEvents = ({ className = '' }: FeaturedEventsProps) => {
   return (
-    <section className={`mt-6 md:mt-8 ${className}`}>
+    <section className={`mt-6 md:mt-8 mb-3 md:mb-4 ${className}`}>
       <div className="mb-3 md:mb-4 flex items-center justify-between gap-3">
         <h3 className="text-2xl md:text-[2rem] font-semibold text-foreground">กิจกรรมแนะนำ</h3>
         <Link href="/events" className="text-sm md:text-base font-semibold text-link hover:opacity-80 transition-opacity">
@@ -16,10 +16,10 @@ export const FeaturedEvents = ({ className = '' }: FeaturedEventsProps) => {
         </Link>
       </div>
 
-      <div className="grid gap-4 md:gap-5 lg:grid-cols-[minmax(0,1.9fr)_minmax(0,1fr)] lg:grid-rows-2 lg:items-stretch">
+      <div className="grid gap-4 md:gap-5 lg:grid-cols-[minmax(0,1.9fr)_minmax(0,1fr)] lg:items-stretch">
         <FeaturedEventsMainCard event={FEATURED_EVENTS.spotlight} />
 
-        <div className="grid gap-4 md:gap-5 lg:grid-rows-2 lg:h-full">
+        <div className="grid gap-4 md:gap-5 lg:auto-rows-fr lg:h-full">
           {FEATURED_EVENTS.highlights.map((event) => (
             <FeaturedEventsListItem key={event.id} event={event} />
           ))}

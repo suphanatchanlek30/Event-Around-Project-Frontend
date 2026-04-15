@@ -5,6 +5,7 @@ import {
   EventsSearchFilter,
   FeaturedEvents,
   HeroBanner,
+  UpcomingEventsSection,
 } from '@/components/public-section/home';
 
 export default function Home() {
@@ -15,6 +16,7 @@ export default function Home() {
         <EventsSearchFilter />
         <CategoryFilter />
         <FeaturedEvents />
+        <UpcomingEventsSection />
       </div>
     </main>
   );
