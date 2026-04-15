@@ -3,6 +3,7 @@
 import {
   CategoryFilter,
   EventsSearchFilter,
+  FeaturedEvents,
   HeroBanner,
 } from '@/components/public-section/home';
 
@@ -13,6 +14,7 @@ export default function Home() {
         <HeroBanner className="w-full" />
         <EventsSearchFilter />
         <CategoryFilter />
+        <FeaturedEvents />
       </div>
     </main>
   );
