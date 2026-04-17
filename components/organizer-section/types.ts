@@ -1,4 +1,6 @@
-export type OrganizerEventStatus = 'เผยแพร่แล้ว' | 'ฉบับร่าง';
+export type OrganizerEventStatus = 'DRAFT' | 'PUBLISHED' | 'CANCELLED';
+
+export type OrganizerImportStatus = 'SUCCESS' | 'PARTIAL_SUCCESS' | 'PROCESSING';
 
 export interface OrganizerStatItem {
   id: string;
@@ -9,15 +11,35 @@ export interface OrganizerStatItem {
 }
 
 export interface OrganizerEventItem {
-  id: number;
+  eventId: number;
   title: string;
-  location: string;
-  date: string;
-  saves: number;
+  locationName: string;
+  startTime: string;
+  endTime: string;
+  savedCount: number;
+  categoryId: number;
+  categoryName: string;
   status: OrganizerEventStatus;
 }
 
 export interface OrganizerNavItem {
   label: string;
   href: string;
+}
+
+export interface OrganizerCategoryItem {
+  categoryId: number;
+  name: string;
+  description: string;
+  isActive: boolean;
+}
+
+export interface OrganizerImportItem {
+  importLogId: number;
+  source: 'CSV' | 'JSON';
+  totalRecords: number;
+  successRecords: number;
+  failedRecords: number;
+  createdAt: string;
+  status: OrganizerImportStatus;
 }

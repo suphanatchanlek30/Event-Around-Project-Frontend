@@ -1,29 +1,34 @@
-"use client";
+'use client';
 
 import { useMemo, useState } from 'react';
-import { FaCloudUploadAlt, FaHeart, FaMapMarkerAlt, FaRegClock } from 'react-icons/fa';
-import { ORGANIZER_EVENTS } from '../constants';
+import { FaCloudUploadAlt, FaMapMarkerAlt, FaRegClock } from 'react-icons/fa';
+import { FiCheckCircle, FiEye, FiXCircle } from 'react-icons/fi';
+import { ADMIN_EVENTS } from '../constants';
 
 const getStatusClassName = (status: string) => {
   if (status === 'PUBLISHED') {
     return 'bg-emerald-100 text-emerald-700';
   }
-  if (status === 'CANCELLED') {
-    return 'bg-rose-100 text-rose-700';
+  if (status === 'PENDING_APPROVAL') {
+    return 'bg-amber-100 text-amber-700';
   }
-
-  return 'bg-slate-200 text-slate-600';
+  if (status === 'DRAFT') {
+    return 'bg-slate-200 text-slate-700';
+  }
+  return 'bg-rose-100 text-rose-700';
 };
 
 const getStatusLabel = (status: string) => {
   if (status === 'PUBLISHED') {
     return 'เผยแพร่แล้ว';
   }
-  if (status === 'CANCELLED') {
-    return 'ยกเลิก';
+  if (status === 'PENDING_APPROVAL') {
+    return 'รออนุมัติ';
   }
-
-  return 'ฉบับร่าง';
+  if (status === 'DRAFT') {
+    return 'ฉบับร่าง';
+  }
+  return 'ยกเลิก';
 };
 
 const formatDate = (dateTime: string) => {
@@ -34,14 +39,14 @@ const formatDate = (dateTime: string) => {
   });
 };
 
-export const OrganizerEventsPage = () => {
+export const AdminEventsPage = () => {
   const [title, setTitle] = useState('Annual Tech Symposium 2024');
   const [category, setCategory] = useState('Academic');
   const [shortDescription, setShortDescription] = useState(
-    'เวทีแบ่งปันองค์ความรู้และแนวโน้มเทคโนโลยีเพื่ออนาคต',
+    'เวทีแบ่งปันองค์ความรู้และแนวโน้มเทคโนโลยีสำหรับนักศึกษา',
   );
   const [description, setDescription] = useState(
-    'งานสัมมนาที่รวมผู้เชี่ยวชาญหลายด้าน ทั้ง AI, Cloud และความยั่งยืน พร้อมช่วงถามตอบและ networking',
+    'กิจกรรมสัมมนาภาพรวมเทคโนโลยี AI และ Cloud พร้อมผู้บรรยายรับเชิญจากภาคอุตสาหกรรม',
   );
   const [location, setLocation] = useState('Main Campus Auditorium');
   const [startTime, setStartTime] = useState('2026-04-24T16:00');
@@ -82,9 +87,9 @@ export const OrganizerEventsPage = () => {
   return (
     <section className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-5 md:py-8 space-y-6">
       <div className="rounded-2xl bg-surface border border-border p-4 md:p-6 shadow-sm">
-        <h1 className="text-3xl md:text-4xl font-bold text-foreground">สร้างอีเวนต์ใหม่</h1>
+        <h1 className="text-3xl md:text-4xl font-bold text-foreground">สร้างและจัดการอีเวนต์</h1>
         <p className="text-sm md:text-base text-muted mt-2">
-          แบบฟอร์มสร้างอีเวนต์แบบคงที่ พร้อมพรีวิวการ์ดก่อนเผยแพร่
+          แบบฟอร์มสร้างอีเวนต์แบบคงที่สำหรับผู้ดูแล พร้อมพรีวิวการ์ดก่อนเผยแพร่
         </p>
 
         <div className="grid grid-cols-1 xl:grid-cols-[1.7fr_1fr] gap-5 mt-5">
@@ -224,8 +229,7 @@ export const OrganizerEventsPage = () => {
 
             <div className="rounded-xl bg-indigo-50 border border-indigo-100 p-3">
               <p className="text-xs text-indigo-700">
-                เคล็ดลับ: พรีวิวนี้ช่วยให้เห็นหน้าตาการ์ดก่อนเชื่อม API จริง
-                สำหรับสร้างอีเวนต์
+                โหมดพรีวิวนี้ใช้ตรวจสอบรูปแบบการ์ดก่อนส่งคำสั่งสร้างหรือเผยแพร่
               </p>
             </div>
           </aside>
@@ -233,26 +237,26 @@ export const OrganizerEventsPage = () => {
       </div>
 
       <div className="rounded-2xl bg-surface border border-border p-4 md:p-6 shadow-sm">
-        <h2 className="text-2xl font-semibold text-foreground mb-4">อีเวนต์ที่มีอยู่</h2>
+        <h2 className="text-2xl font-semibold text-foreground mb-4">รายการอีเวนต์ทั้งหมด</h2>
         <div className="overflow-x-auto rounded-xl border border-border">
-          <table className="min-w-[760px] w-full">
+          <table className="min-w-[860px] w-full">
             <thead className="bg-surface-muted/70">
               <tr className="text-left text-xs uppercase tracking-wide text-muted">
                 <th className="px-4 py-3">ชื่อกิจกรรม</th>
-                <th className="px-4 py-3">สถานที่</th>
-                <th className="px-4 py-3">สถานะ</th>
+                <th className="px-4 py-3">ผู้จัด</th>
+                <th className="px-4 py-3">หมวดหมู่</th>
                 <th className="px-4 py-3">วันที่</th>
-                <th className="px-4 py-3">บันทึก</th>
+                <th className="px-4 py-3">สถานะ</th>
                 <th className="px-4 py-3">จัดการ</th>
               </tr>
             </thead>
             <tbody>
-              {ORGANIZER_EVENTS.map((event) => (
+              {ADMIN_EVENTS.map((event) => (
                 <tr key={event.eventId} className="border-t border-border text-sm">
-                  <td className="px-4 py-4">
-                    <p className="font-semibold text-foreground leading-tight">{event.title}</p>
-                  </td>
-                  <td className="px-4 py-4 text-muted">{event.locationName}</td>
+                  <td className="px-4 py-4 font-semibold text-foreground">{event.title}</td>
+                  <td className="px-4 py-4 text-muted">{event.organizerFullName}</td>
+                  <td className="px-4 py-4 text-foreground">{event.categoryName}</td>
+                  <td className="px-4 py-4 text-muted">{formatDate(event.startTime)}</td>
                   <td className="px-4 py-4">
                     <span
                       className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold ${getStatusClassName(event.status)}`}
@@ -260,20 +264,30 @@ export const OrganizerEventsPage = () => {
                       {getStatusLabel(event.status)}
                     </span>
                   </td>
-                  <td className="px-4 py-4 font-medium text-foreground">{formatDate(event.startTime)}</td>
                   <td className="px-4 py-4">
-                    <span className="inline-flex items-center gap-1 text-indigo-600 font-semibold">
-                      <FaHeart className="text-sm" />
-                      {event.savedCount.toLocaleString('en-US')}
-                    </span>
-                  </td>
-                  <td className="px-4 py-4">
-                    <button
-                      type="button"
-                      className="text-sm font-semibold text-link hover:underline"
-                    >
-                      ดูรายละเอียด
-                    </button>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <button
+                        type="button"
+                        className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg border border-indigo-200 bg-indigo-50 text-indigo-700 text-xs font-semibold hover:bg-indigo-100"
+                      >
+                        <FiEye className="text-sm" />
+                        ดู
+                      </button>
+                      <button
+                        type="button"
+                        className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-700 text-xs font-semibold hover:bg-emerald-100"
+                      >
+                        <FiCheckCircle className="text-sm" />
+                        Publish
+                      </button>
+                      <button
+                        type="button"
+                        className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 text-xs font-semibold hover:bg-rose-100"
+                      >
+                        <FiXCircle className="text-sm" />
+                        Cancel
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

@@ -3,18 +3,18 @@
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { useScrollDirection } from '@/hooks/useScrollDirection';
-import { OrganizerNavbarLogo } from './organizer-navbar-logo';
-import { OrganizerNavbarMenu } from './organizer-navbar-menu';
-import { OrganizerNavbarMobile } from './organizer-navbar-mobile';
-import { OrganizerNavbarProfile } from './organizer-navbar-profile';
+import { AdminNavbarLogo } from './admin-navbar-logo';
+import { AdminNavbarMenu } from './admin-navbar-menu';
+import { AdminNavbarMobile } from './admin-navbar-mobile';
+import { AdminNavbarProfile } from './admin-navbar-profile';
 
-export const OrganizerNavbar = () => {
+export const AdminNavbar = () => {
   const pathname = usePathname();
   const isVisible = useScrollDirection();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   const isActive = (href: string) => {
-    if (href === '/organizer') {
+    if (href === '/admin') {
       return pathname === href;
     }
 
@@ -29,7 +29,7 @@ export const OrganizerNavbar = () => {
     >
       <div className="h-16 px-4 md:px-6 lg:px-8 max-w-7xl mx-auto flex items-center justify-between">
         <div className="md:hidden">
-          <OrganizerNavbarMobile
+          <AdminNavbarMobile
             isOpen={isMobileOpen}
             onToggle={() => setIsMobileOpen((prev) => !prev)}
             isActive={isActive}
@@ -37,12 +37,12 @@ export const OrganizerNavbar = () => {
         </div>
 
         <div className="flex-1 md:flex-none flex justify-center">
-          <OrganizerNavbarLogo />
+          <AdminNavbarLogo />
         </div>
 
-        <div className="flex items-center gap-4 md:gap-10">
-          <OrganizerNavbarMenu className="hidden md:block" isActive={isActive} />
-          <OrganizerNavbarProfile />
+        <div className="flex items-center gap-4 md:gap-8">
+          <AdminNavbarMenu className="hidden md:block" isActive={isActive} />
+          <AdminNavbarProfile />
         </div>
       </div>
     </header>
