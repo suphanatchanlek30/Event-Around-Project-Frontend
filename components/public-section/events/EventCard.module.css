@@ -1,0 +1,64 @@
+.card {
+  width: 300px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  margin-right: 20px;
+}
+
+/* IMAGE */
+.image {
+  height: 160px;
+  background: linear-gradient(135deg, #1e1e2f, #3a3a5a);
+  position: relative;
+}
+
+/* BADGE */
+.badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #4a3aff;
+  color: white;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+/* HEART */
+.heart {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: white;
+  border: none;
+  border-radius: 50%;
+  padding: 6px;
+  cursor: pointer;
+}
+
+/* CONTENT */
+.content {
+  padding: 15px;
+}
+
+.title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.desc {
+  font-size: 13px;
+  color: #666;
+  margin: 8px 0;
+}
+
+/* INFO */
+.info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #777;
+}
