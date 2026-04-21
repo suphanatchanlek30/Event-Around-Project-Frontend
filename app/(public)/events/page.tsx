@@ -16,5 +16,6 @@ export default function EventsPage() {
       </div>
 
     </div>
+    <div>Events page</div>
   );
 }
