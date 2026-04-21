@@ -10,8 +10,8 @@ import {
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
-      <div className="max-w-6xl mx-auto px-4 py-8 md:py-12">
+    <main className="min-h-screen w-full">
+      <div className="mx-auto max-w-7xl px-4 md:px-6 lg:px-8 py-8 md:py-12">
         <HeroBanner className="w-full" />
         <EventsSearchFilter />
         <CategoryFilter />

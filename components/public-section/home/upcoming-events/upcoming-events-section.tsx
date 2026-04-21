@@ -44,9 +44,9 @@ export const UpcomingEventsSection = ({ className = '' }: UpcomingEventsProps) =
         })}
       </div>
 
-      <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory lg:grid lg:grid-cols-2 xl:grid-cols-3 lg:overflow-visible lg:pb-0 lg:gap-4">
+      <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory lg:grid lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 lg:overflow-visible lg:pb-0 lg:gap-4">
         {events.map((event) => (
-          <div key={event.id} className="min-w-[18rem] sm:min-w-[22rem] lg:min-w-0 lg:h-full">
+          <div key={event.id} className="min-w-[18rem] sm:min-w-88 lg:min-w-0 lg:h-full">
             <UpcomingEventCard event={event} />
           </div>
         ))}
