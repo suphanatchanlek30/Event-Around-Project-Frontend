@@ -1,21 +1,14 @@
 // app/(public)/events/page.tsx
 
+
 import EventSearch from "@/components/public-section/events/EventSearch";
-import EventCard from "@/components/public-section/events/EventCard";
+import EventList from "@/components/public-section/events/EventList";
 
 export default function EventsPage() {
   return (
-    <div>
-
+    <div className="max-w-5xl mx-auto px-2 md:px-0 py-8">
       <EventSearch />
-
-      <div style={{ display: "flex", marginTop: "20px" }}>
-        <EventCard />
-        <EventCard />
-        <EventCard />
-      </div>
-
+      <EventList />
     </div>
-    <div>Events page</div>
   );
 }
