@@ -6,7 +6,7 @@ import EventList from "@/components/public-section/events/EventList";
 
 export default function EventsPage() {
   return (
-    <div className="max-w-5xl mx-auto px-2 md:px-0 py-8">
+    <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-12">
       <EventSearch />
       <EventList />
     </div>
