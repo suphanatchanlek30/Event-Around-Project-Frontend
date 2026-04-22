@@ -18,8 +18,21 @@ L.Icon.Default.mergeOptions({
 
 export function MapSection() {
   return (
-    <div className="w-full h-full bg-gray-300 flex items-center justify-center">
-      Map Area
+    <div className="w-full h-full">
+      <MapContainer
+        center={[13.7563, 100.5018]}
+        zoom={13}
+        className="w-full h-full"
+      >
+        <TileLayer
+          attribution="&copy; OpenStreetMap contributors"
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+
+        <Marker position={[13.7563, 100.5018]}>
+          <Popup>Bangkok</Popup>
+        </Marker>
+      </MapContainer>
     </div>
   );
 }
