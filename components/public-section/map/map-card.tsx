@@ -58,8 +58,8 @@ export default function MapCard({
               size={16}
               className={
                 isBookmarked
-                  ? "text-black fill-black"
-                  : "text-gray-400"
+                  ? "text-[#4338ca] fill-[#4338ca]"
+                  : "text-[#4338ca]"
               }
             />
           </button>
