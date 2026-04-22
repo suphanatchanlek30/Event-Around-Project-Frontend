@@ -15,10 +15,9 @@ export function MapCategoryFilter() {
             key={cat}
             onClick={() => setActive(cat)}
             className={`flex-shrink-0 px-4 py-2 rounded-full text-sm whitespace-nowrap transition
-              ${
-                active === cat
-                  ? "bg-[#4338ca] text-white"
-                  : "bg-white text-gray-700"
+              ${active === cat
+                ? "bg-[#4338ca] text-white"
+                : "bg-white text-gray-700"
               }`}
           >
             {cat}

@@ -8,7 +8,7 @@ export function MapFilter() {
 
   return (
     <div className="absolute top-4 left-4 z-10 w-full max-w-[380px] px-4">
-      
+
       <div className="w-full max-w-[320px] ml-auto bg-white/90 backdrop-blur-md shadow-lg rounded-4xl p-2 flex items-stretch gap-2">
 
         {/*left*/}

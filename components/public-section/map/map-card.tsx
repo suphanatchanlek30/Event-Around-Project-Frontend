@@ -33,7 +33,7 @@ export default function MapCard({
         />
 
         <div className="absolute top-2 left-2 bg-white text-[#4338ca] text-[10px] px-2 py-1 rounded-full font-semibold">
-            ห่างออกไป {event.distance}
+          ห่างออกไป {event.distance}
         </div>
       </div>
 
