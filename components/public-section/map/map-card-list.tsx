@@ -16,14 +16,14 @@ const mockEvents: Event[] = [
     title: "Tech Talk: Future of AI in Design",
     date: "พรุ่งนี้ เวลา 18:00 น.",
     imageUrl:
-      "https://images.unsplash.com/photo-1506157786151-b8491531f063",
+      "https://i.pinimg.com/control1/736x/10/bc/bd/10bcbdc51fdacda178fbf70267e19251.jpg",
   },
   {
     id: 2,
-    title: "Food Market",
+    title: "Acoustic Garden Session",
     date: "พรุ่งนี้ เวลา 18:00 น.",
     imageUrl:
-      "https://images.unsplash.com/photo-1504674900247-0877df9cc836",
+      "https://i.pinimg.com/736x/69/d4/f5/69d4f553a801270cc080e78402855353.jpg",
   },
 ];
 

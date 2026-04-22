@@ -33,7 +33,7 @@ export default function MapCard({
       </div>
 
       {/* content */}
-      <div className="p-3 flex flex-col min-w-0">
+      <div className="p-3 flex flex-col min-h-[120px]">
 
         {/* title + bookmark */}
         <div className="grid grid-cols-[1fr_auto] gap-2 items-start w-full min-w-0">
@@ -68,7 +68,7 @@ export default function MapCard({
         </div>
 
         {/* button */}
-        <div className="mt-2 flex justify-end">
+        <div className="mt-auto flex justify-end">
           <button
             onClick={(e) => {
               e.stopPropagation();
