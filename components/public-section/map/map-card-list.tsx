@@ -8,6 +8,7 @@ type Event = {
   title: string;
   date: string;
   imageUrl: string;
+  distance: string;
 };
 
 const mockEvents: Event[] = [
@@ -17,6 +18,7 @@ const mockEvents: Event[] = [
     date: "พรุ่งนี้ เวลา 18:00 น.",
     imageUrl:
       "https://i.pinimg.com/control1/736x/10/bc/bd/10bcbdc51fdacda178fbf70267e19251.jpg",
+    distance: "0.8 กม.",
   },
   {
     id: 2,
@@ -24,6 +26,7 @@ const mockEvents: Event[] = [
     date: "พรุ่งนี้ เวลา 18:00 น.",
     imageUrl:
       "https://i.pinimg.com/736x/69/d4/f5/69d4f553a801270cc080e78402855353.jpg",
+    distance: "1.2 กม.",
   },
 ];
 

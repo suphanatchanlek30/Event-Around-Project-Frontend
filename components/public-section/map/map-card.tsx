@@ -7,6 +7,7 @@ type Event = {
   title: string;
   date: string;
   imageUrl: string;
+  distance: string;
 };
 
 type Props = {
@@ -24,12 +25,16 @@ export default function MapCard({
     <div className="min-w-[260px] w-[260px] snap-start bg-white rounded-2xl shadow-md overflow-hidden flex-shrink-0 transition">
 
       {/* image */}
-      <div className="h-28 w-full overflow-hidden">
+      <div className="h-28 w-full overflow-hidden relative">
         <img
           src={event.imageUrl}
           alt={event.title}
           className="w-full h-full object-cover"
         />
+
+        <div className="absolute top-2 left-2 bg-white text-[#4338ca] text-[10px] px-2 py-1 rounded-full">
+            ห่างออกไป {event.distance}
+        </div>
       </div>
 
       {/* content */}
