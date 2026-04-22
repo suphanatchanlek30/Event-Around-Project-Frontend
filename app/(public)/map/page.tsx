@@ -6,7 +6,7 @@ import { MapCardList } from '@/components/public-section/map/map-card-list';
 
 export default function MapPage() {
   return (
-    <main className="relative w-full h-full">
+    <main className="relative w-full h-sreen overflow-hidden">
       <MapSection />
       <MapFilter />
       <MapCardList />
