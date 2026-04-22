@@ -1,6 +1,7 @@
 "use client";
 
 import { Calendar } from "lucide-react";
+import { Bookmark } from "lucide-react";
 
 type Event = {
   id: number;
@@ -35,7 +36,7 @@ export function MapCardList() {
         {mockEvents.map((event) => (
           <div
             key={event.id}
-            className="min-w-[260px] snap-start bg-white rounded-2xl shadow-md overflow-hidden flex-shrink-0 transition"
+            className="min-w-[260px] w-[260px] snap-start bg-white rounded-2xl shadow-md overflow-hidden flex-shrink-0 transition"
           >
             {/*image*/}
             <div className="h-28 w-full overflow-hidden">
@@ -47,18 +48,33 @@ export function MapCardList() {
             </div>
 
             {/*content*/}
-            <div className="p-3 flex  flex-col">
-              <div>
-                <div className="text-sm font-semibold text-black">
+            <div className="p-3 flex flex-col min-w-0">
+
+              <div className="grid grid-cols-[1fr_auto] gap-2 items-start w-full min-w-0">
+
+                {/*title*/}
+                <div className="text-sm font-semibold text-black leading-snug min-w-0 break-words whitespace-normal">
                   {event.title}
                 </div>
 
-                {/*date*/}
+                {/* bookmark */}
+                <button
+                  onClick={(e) => {
+                  e.stopPropagation();
+                  console.log("bookmark", event.id);
+                }}
+                className="p-1 rounded-full hover:bg-gray-100 transition shrink-0 self-start"
+                >
+                  <Bookmark size={16} className="text-gray-500 hover:text-[#4338ca]" />
+                </button>
+
+              </div>
+              
+              {/*date*/}
                 <div className="text-xs text-gray-500 mt-1 flex items-center gap-1">
                   <Calendar size={14} className="text-black" />
                     {event.date}
                 </div>
-              </div>
               
               {/*button*/}
               <div className="mt-2 flex justify-end">
