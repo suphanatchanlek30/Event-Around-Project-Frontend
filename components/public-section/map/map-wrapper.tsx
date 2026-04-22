@@ -10,5 +10,9 @@ const MapSection = dynamic(
 );
 
 export default function MapWrapper() {
-  return <MapSection />;
+  return (
+    <div className="w-full h-full">
+      <MapSection />
+    </div>
+  );
 }
