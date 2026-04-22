@@ -18,11 +18,11 @@ L.Icon.Default.mergeOptions({
 
 export function MapSection() {
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full relative z-0">
       <MapContainer
         center={[13.7563, 100.5018]}
         zoom={13}
-        className="w-full h-full"
+        className="w-full h-full z-0"
       >
         <TileLayer
           attribution="&copy; OpenStreetMap contributors"

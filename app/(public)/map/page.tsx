@@ -6,7 +6,7 @@ import { MapCardList } from '@/components/public-section/map/map-card-list';
 
 export default function MapPage() {
   return (
-    <main className="relative w-full h-screen overflow-hidden">
+    <main className="relative w-screen h-screen overflow-hidden">
 
       {/*map*/}
       <div className="absolute inset-0 z-0">
@@ -14,7 +14,7 @@ export default function MapPage() {
       </div>
 
       {/*filter*/}
-      <div className="absolute top-4 left-4 z-10">
+      <div className="absolute top-4 left-0 right-0 z-10 flex justify-center px-4">
         <MapFilter />
       </div>
       

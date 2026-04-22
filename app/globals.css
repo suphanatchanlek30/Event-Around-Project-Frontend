@@ -43,13 +43,6 @@ body {
   font-family: var(--font-inter), var(--font-athiti), sans-serif;
 }
 
-html,
-body,
-#__next {
-  height: 100%;
-  width: 100%;
-  margin: 0;
-}
 
 ::selection {
   background: rgba(79, 70, 229, 0.16);
