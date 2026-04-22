@@ -7,9 +7,9 @@ export function MapFilter() {
   const [radius, setRadius] = useState(5);
 
   return (
-    <div className="absolute top-4 left-0 right-0 z-10 flex justify-center px-4">
+    <div className="absolute top-4 left-4 z-10 w-full max-w-[380px] px-4">
       
-      <div className="w-full max-w-[320px] bg-white/90 backdrop-blur-md shadow-lg rounded-4xl p-2 flex items-stretch gap-2">
+      <div className="w-full max-w-[320px] ml-auto bg-white/90 backdrop-blur-md shadow-lg rounded-4xl p-2 flex items-stretch gap-2">
 
         {/*left*/}
         <div className="flex-[1.5]">

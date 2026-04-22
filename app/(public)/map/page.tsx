@@ -15,9 +15,7 @@ export default function MapPage() {
       </div>
 
       {/*filter*/}
-      <div className="absolute top-4 left-0 right-0 z-10 flex justify-center px-4">
         <MapFilter />
-      </div>
 
       {/* category filter */}
       <MapCategoryFilter />
