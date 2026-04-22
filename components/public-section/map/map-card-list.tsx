@@ -23,25 +23,19 @@ const mockEvents: Event[] = [
     date: "พรุ่งนี้ เวลา 18:00 น.",
     imageUrl:
       "https://images.unsplash.com/photo-1504674900247-0877df9cc836",
-  },
-  {
-    id: 3,
-    title: "Tech Meetup",
-    date: "พรุ่งนี้ เวลา 18:00 น.",
-    imageUrl:
-      "https://images.unsplash.com/photo-1556761175-b413da4baf72",
   }
+
 ];
 
 export function MapCardList() {
   return (
-    <div className="w-full px-4 pb-4">
+    <div className="w-full px-4 pb-6">
       <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory scroll-smooth">
 
         {mockEvents.map((event) => (
           <div
             key={event.id}
-            className="min-w-[260px] snap-start bg-white rounded-2xl shadow-md overflow-hidden flex-shrink-0 active:scale-95 transition"
+            className="min-w-[260px] snap-start bg-white rounded-2xl shadow-md overflow-hidden flex-shrink-0 transition"
           >
             {/*image*/}
             <div className="h-28 w-full overflow-hidden">
@@ -61,16 +55,23 @@ export function MapCardList() {
 
                 {/*date*/}
                 <div className="text-xs text-gray-500 mt-1 flex items-center gap-1">
-                  <Calendar size={14} className="text black" />
+                  <Calendar size={14} className="text-black" />
                     {event.date}
                 </div>
               </div>
               
               {/*button*/}
               <div className="mt-2 flex justify-end">
-                <div className="text-xs text-[#4338ca] font-medium border border-[#4338ca] rounded-full px-3 py-1">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    console.log("open detail", event.id);
+                  }}
+                  className="text-xs bg-[#4338ca] text-white font-medium rounded-full px-3 py-1 hover:bg-[#372fb0] transition-colors"
+                >
                   รายละเอียด
-                </div>
+                </button>
+                
               </div>
               
             </div>

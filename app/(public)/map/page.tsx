@@ -24,7 +24,7 @@ export default function MapPage() {
       </div>
       
       {/*card*/}
-    <div className="absolute bottom-20 left-0 w-full z-50 px-4">
+    <div className="absolute bottom-[60px] left-0 w-full z-40">
         <MapCardList />
     </div>
     </main>

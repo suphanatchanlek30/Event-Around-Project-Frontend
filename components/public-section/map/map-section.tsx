@@ -24,10 +24,6 @@ export function MapSection() {
       .leaflet-control-zoom {
         display: none !important;
       }
-
-      .leaflet-control-container {
-        display: none !important;
-      }
     `}</style>
     
       <MapContainer
@@ -35,6 +31,10 @@ export function MapSection() {
         zoom={13}
         zoomControl={false}
         className="w-full h-full z-0"
+        doubleClickZoom={false}
+        scrollWheelZoom={false}
+        dragging={true}
+        touchZoom={false}
       >
         <TileLayer
           attribution="&copy; OpenStreetMap contributors"
