@@ -2,6 +2,7 @@
 
 import MapWrapper from "@/components/public-section/map/map-wrapper";
 import { MapFilter } from '@/components/public-section/map/map-filter';
+import { MapCategoryFilter } from "@/components/public-section/map/map-category-filter";
 import { MapCardList } from '@/components/public-section/map/map-card-list';
 
 export default function MapPage() {
@@ -17,6 +18,9 @@ export default function MapPage() {
       <div className="absolute top-4 left-0 right-0 z-10 flex justify-center px-4">
         <MapFilter />
       </div>
+
+      {/* category filter */}
+      <MapCategoryFilter />
       
       {/*card*/}
       <div className="absolute bottom-0 left-0 w-full z-10">
