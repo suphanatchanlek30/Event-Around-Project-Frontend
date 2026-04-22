@@ -1,7 +1,7 @@
 "use client";
 
-import { Calendar } from "lucide-react";
-import { Bookmark } from "lucide-react";
+import { useState } from "react";
+import MapCard from "./map-card";
 
 type Event = {
   id: number;
@@ -24,74 +24,31 @@ const mockEvents: Event[] = [
     date: "พรุ่งนี้ เวลา 18:00 น.",
     imageUrl:
       "https://images.unsplash.com/photo-1504674900247-0877df9cc836",
-  }
-
+  },
 ];
 
 export function MapCardList() {
+  const [bookmarked, setBookmarked] = useState<number[]>([]);
+
+  const toggleBookmark = (id: number) => {
+    setBookmarked((prev) =>
+      prev.includes(id)
+        ? prev.filter((i) => i !== id)
+        : [...prev, id]
+    );
+  };
+
   return (
     <div className="w-full px-4 pb-6">
       <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory scroll-smooth">
 
         {mockEvents.map((event) => (
-          <div
+          <MapCard
             key={event.id}
-            className="min-w-[260px] w-[260px] snap-start bg-white rounded-2xl shadow-md overflow-hidden flex-shrink-0 transition"
-          >
-            {/*image*/}
-            <div className="h-28 w-full overflow-hidden">
-              <img
-                src={event.imageUrl}
-                alt={event.title}
-                className="w-full h-full object-cover"
-              />
-            </div>
-
-            {/*content*/}
-            <div className="p-3 flex flex-col min-w-0">
-
-              <div className="grid grid-cols-[1fr_auto] gap-2 items-start w-full min-w-0">
-
-                {/*title*/}
-                <div className="text-sm font-semibold text-black leading-snug min-w-0 break-words whitespace-normal">
-                  {event.title}
-                </div>
-
-                {/* bookmark */}
-                <button
-                  onClick={(e) => {
-                  e.stopPropagation();
-                  console.log("bookmark", event.id);
-                }}
-                className="p-1 rounded-full hover:bg-gray-100 transition shrink-0 self-start"
-                >
-                  <Bookmark size={16} className="text-gray-500 hover:text-[#4338ca]" />
-                </button>
-
-              </div>
-              
-              {/*date*/}
-                <div className="text-xs text-gray-500 mt-1 flex items-center gap-1">
-                  <Calendar size={14} className="text-black" />
-                    {event.date}
-                </div>
-              
-              {/*button*/}
-              <div className="mt-2 flex justify-end">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    console.log("open detail", event.id);
-                  }}
-                  className="text-xs bg-[#4338ca] text-white font-medium rounded-full px-3 py-1 hover:bg-[#372fb0] transition-colors"
-                >
-                  รายละเอียด
-                </button>
-                
-              </div>
-              
-            </div>
-          </div>
+            event={event}
+            isBookmarked={bookmarked.includes(event.id)}
+            onToggleBookmark={toggleBookmark}
+          />
         ))}
 
       </div>
