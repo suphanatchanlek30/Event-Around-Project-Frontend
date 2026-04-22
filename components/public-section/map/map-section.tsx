@@ -19,9 +19,21 @@ L.Icon.Default.mergeOptions({
 export function MapSection() {
   return (
     <div className="w-full h-full relative z-0">
+
+    <style jsx global>{`
+      .leaflet-control-zoom {
+        display: none !important;
+      }
+
+      .leaflet-control-container {
+        display: none !important;
+      }
+    `}</style>
+    
       <MapContainer
         center={[13.7563, 100.5018]}
         zoom={13}
+        zoomControl={false}
         className="w-full h-full z-0"
       >
         <TileLayer
