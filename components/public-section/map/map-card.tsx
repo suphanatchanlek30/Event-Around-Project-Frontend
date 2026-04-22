@@ -32,7 +32,7 @@ export default function MapCard({
           className="w-full h-full object-cover"
         />
 
-        <div className="absolute top-2 left-2 bg-white text-[#4338ca] text-[10px] px-2 py-1 rounded-full">
+        <div className="absolute top-2 left-2 bg-white text-[#4338ca] text-[10px] px-2 py-1 rounded-full font-semibold">
             ห่างออกไป {event.distance}
         </div>
       </div>
@@ -67,7 +67,7 @@ export default function MapCard({
         </div>
 
         {/* date */}
-        <div className="text-xs text-gray-500 mt-1 flex items-center gap-1">
+        <div className="text-xs text-gray-500 mt-1 flex items-center gap-1 ">
           <Calendar size={14} className="text-black" />
           {event.date}
         </div>
