@@ -1,6 +1,6 @@
 "use client";
 
-import { MapPin } from "lucide-react";
+import { MapPin, Bookmark } from "lucide-react";
 
 export default function ProfileBookmarkActivities() {
     //mock data
@@ -27,7 +27,7 @@ export default function ProfileBookmarkActivities() {
 
             {/* Header */}
             <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-semibold text-gray-800">
+                <h2 className="text-lg font-bold text-gray-800">
                     กิจกรรมที่บันทึกไว้
                 </h2>
 
@@ -42,8 +42,13 @@ export default function ProfileBookmarkActivities() {
                 {savedEvents.map((event) => (
                     <div
                         key={event.id}
-                        className="min-w-[220px] bg-white rounded-xl shadow-sm hover:shadow-md transition cursor-pointer overflow-hidden"
+                        className="relative min-w-[220px] bg-white rounded-xl shadow-sm hover:shadow-md transition cursor-pointer overflow-hidden"
                     >
+                        {/* Bookmark icon */}
+                        <button className="absolute top-2 right-2 bg-white/80 p-1 rounded-full shadow hover:scale-105 transition">
+                            <Bookmark size={16} className="text-indigo-600" />
+                        </button>
+
                         {/* Image */}
                         <img
                             src={event.image}
