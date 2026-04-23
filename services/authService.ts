@@ -54,6 +54,19 @@ export type LoginResponseData = {
   expiresIn?: number;
 };
 
+type LoginResponseDataWithNestedUser = {
+  accessToken: string;
+  refreshToken: string;
+  tokenType?: string;
+  expiresIn?: number;
+  user?: {
+    userId?: number;
+    fullName?: string;
+    email?: string;
+    role?: string;
+  };
+};
+
 export type RefreshTokenResponseData = {
   accessToken: string;
   refreshToken?: string;
@@ -80,6 +93,48 @@ const persistAuth = (payload: LoginResponseData) => {
     role: payload.role,
   };
   localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
+};
+
+const normalizeUserRole = (role?: string): UserRole => {
+  const normalized = role?.trim().toUpperCase();
+
+  if (normalized === "ADMIN") {
+    return "ADMIN";
+  }
+
+  if (normalized === "ORGANIZER") {
+    return "ORGANIZER";
+  }
+
+  return "STUDENT";
+};
+
+const normalizeLoginResponseData = (raw: unknown): LoginResponseData => {
+  const payload = raw as LoginResponseData & LoginResponseDataWithNestedUser;
+
+  if (payload?.user) {
+    return {
+      userId: payload.user.userId ?? 0,
+      fullName: payload.user.fullName ?? "",
+      email: payload.user.email ?? "",
+      role: normalizeUserRole(payload.user.role),
+      accessToken: payload.accessToken,
+      refreshToken: payload.refreshToken,
+      tokenType: payload.tokenType,
+      expiresIn: payload.expiresIn,
+    };
+  }
+
+  return {
+    userId: payload.userId,
+    fullName: payload.fullName,
+    email: payload.email,
+    role: normalizeUserRole(payload.role),
+    accessToken: payload.accessToken,
+    refreshToken: payload.refreshToken,
+    tokenType: payload.tokenType,
+    expiresIn: payload.expiresIn,
+  };
 };
 
 export const clearAuthStorage = () => {
@@ -136,16 +191,21 @@ export const registerOrganizer = async (payload: RegisterPayload) => {
 };
 
 export const login = async (payload: LoginPayload) => {
-  const response = await axiosInstance.post<ApiEnvelope<LoginResponseData>>(
+  const response = await axiosInstance.post<ApiEnvelope<unknown>>(
     `${AUTH_API_PREFIX}/login`,
     payload,
   );
 
+  const normalizedData = normalizeLoginResponseData(response.data.data);
+
   if (response.data?.success) {
-    persistAuth(response.data.data);
+    persistAuth(normalizedData);
   }
 
-  return response.data;
+  return {
+    ...response.data,
+    data: normalizedData,
+  } as ApiEnvelope<LoginResponseData>;
 };
 
 export const refreshAccessToken = async (refreshToken?: string) => {

@@ -11,7 +11,7 @@ import AuthFormSubmitButton from "@/components/auth-section/auth-form/auth-form-
 import AuthFormSupportRow from "@/components/auth-section/auth-form/auth-form-support-row";
 import AuthFormSwitchRow from "@/components/auth-section/auth-form/auth-form-switch-row";
 import type { AuthFormProps } from "@/components/auth-section/auth-form/types";
-import { loginService, registerOrganizer, registerStudent } from "@/services";
+import { login, registerOrganizer, registerStudent } from "@/services";
 
 type RegisterRole = "STUDENT" | "ORGANIZER";
 
@@ -23,11 +23,13 @@ const INITIAL_FORM_VALUES: Record<string, string> = {
 };
 
 const getRedirectPathByRole = (role?: string) => {
-  if (role === "ADMIN") {
+  const normalizedRole = role?.trim().toUpperCase();
+
+  if (normalizedRole === "ADMIN") {
     return "/admin";
   }
 
-  if (role === "ORGANIZER") {
+  if (normalizedRole === "ORGANIZER") {
     return "/organizer";
   }
 
@@ -77,7 +79,7 @@ export default function AuthForm({ mode, config }: AuthFormProps) {
   };
 
   const handleLogin = async () => {
-    const response = await loginService({
+    const response = await login({
       email: values.email,
       password: values.password,
     });
@@ -86,8 +88,7 @@ export default function AuthForm({ mode, config }: AuthFormProps) {
       throw new Error(response.message || "เข้าสู่ระบบไม่สำเร็จ");
     }
 
-    const responseData = response.data as { role?: string } | undefined;
-    const redirectPath = getRedirectPathByRole(responseData?.role);
+    const redirectPath = getRedirectPathByRole(response.data?.role);
     router.replace(redirectPath);
     router.refresh();
   };

@@ -1,14 +1,30 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Search, SlidersHorizontal, Shapes, Calendar, Ruler, X } from "lucide-react";
+
+import { CategoryItem, getCategories } from "@/services";
 
 export default function EventSearch() {
   const [activeTab, setActiveTab] = useState("latest");
+  const [categories, setCategories] = useState<CategoryItem[]>([]);
   const [filters, setFilters] = useState({
     category: "",
     date: "",
     distance: "",
   });
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const response = await getCategories();
+        setCategories(response.data);
+      } catch {
+        setCategories([]);
+      }
+    };
+
+    loadCategories();
+  }, []);
 
   const handleClear = () => {
     setFilters({
@@ -31,7 +47,7 @@ export default function EventSearch() {
             placeholder="ค้นหากิจกรรม เวิร์กช็อป..."
           />
           <button className="bg-primary text-white rounded-full p-2.5 flex items-center justify-center hover:opacity-90 transition-opacity">
-            <SlidersHorizontal className="w-[18px] h-[18px]" />
+            <SlidersHorizontal className="h-4.5 w-4.5" />
           </button>
         </div>
 
@@ -59,11 +75,23 @@ export default function EventSearch() {
 
       {/* Filters Row */}
       <div className="flex flex-wrap items-center gap-3">
-        <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-muted hover:bg-[#e4e6eb] transition-colors text-[13px] font-medium text-foreground">
+        <label className="flex items-center gap-2 px-3 py-2 rounded-xl bg-surface-muted text-[13px] font-medium text-foreground">
           <Shapes className="w-4 h-4 text-primary" />
-          หมวดหมู่
-          <span className="ml-1 text-muted text-[10px]">▼</span>
-        </button>
+          <select
+            value={filters.category}
+            onChange={(event) =>
+              setFilters((prev) => ({ ...prev, category: event.target.value }))
+            }
+            className="bg-transparent text-foreground outline-none"
+          >
+            <option value="">หมวดหมู่ทั้งหมด</option>
+            {categories.map((category) => (
+              <option key={category.categoryId} value={String(category.categoryId)}>
+                {category.name}
+              </option>
+            ))}
+          </select>
+        </label>
         
         <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-muted hover:bg-[#e4e6eb] transition-colors text-[13px] font-medium text-foreground">
           <Calendar className="w-4 h-4 text-primary" />
