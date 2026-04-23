@@ -2,39 +2,15 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
-import { FaBookOpen } from 'react-icons/fa';
-
-import { getCategories } from '@/services';
-import { MOCK_CATEGORIES } from './constants';
 import { CategoryChip } from './category-chip';
-import { CategoryFilterProps, CategoryItem } from './types';
+import { CategoryFilterProps } from './types';
 
-export const CategoryFilter = ({ className = '' }: CategoryFilterProps) => {
-  const [categories, setCategories] = useState<CategoryItem[]>(MOCK_CATEGORIES);
-  const [activeCategoryId, setActiveCategoryId] = useState(MOCK_CATEGORIES[0]?.id ?? '');
-
-  useEffect(() => {
-    const loadCategories = async () => {
-      try {
-        const response = await getCategories();
-        const normalized = response.data.map((category) => ({
-          id: String(category.categoryId),
-          label: category.name,
-          icon: FaBookOpen,
-        }));
-
-        if (normalized.length > 0) {
-          setCategories(normalized);
-          setActiveCategoryId(normalized[0].id);
-        }
-      } catch {
-        setCategories(MOCK_CATEGORIES);
-      }
-    };
-
-    loadCategories();
-  }, []);
+export const CategoryFilter = ({
+  className = '',
+  categories,
+  activeCategoryId,
+  onChange,
+}: CategoryFilterProps) => {
 
   return (
     <section className={`mt-4 md:mt-5 ${className}`}>
@@ -47,7 +23,7 @@ export const CategoryFilter = ({ className = '' }: CategoryFilterProps) => {
               key={category.id}
               item={category}
               isActive={activeCategoryId === category.id}
-              onSelect={setActiveCategoryId}
+              onSelect={onChange}
             />
           ))}
         </div>

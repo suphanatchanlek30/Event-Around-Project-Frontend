@@ -4,15 +4,49 @@
 
 import { useMemo, useState } from 'react';
 import { UpcomingEventCard } from './upcoming-event-card';
-import { UPCOMING_EVENT_ITEMS, UPCOMING_EVENTS_TABS } from './constants';
+import { UPCOMING_EVENTS_TABS } from './constants';
 import { UpcomingEventsProps, UpcomingEventsTabKey } from './types';
 
-export const UpcomingEventsSection = ({ className = '' }: UpcomingEventsProps) => {
+const isSameDay = (left: Date, right: Date) => {
+  return (
+    left.getFullYear() === right.getFullYear() &&
+    left.getMonth() === right.getMonth() &&
+    left.getDate() === right.getDate()
+  );
+};
+
+export const UpcomingEventsSection = ({ className = '', events, isLoading = false }: UpcomingEventsProps) => {
   const [activeTab, setActiveTab] = useState<UpcomingEventsTabKey>('all');
 
-  const events = useMemo(() => {
-    return UPCOMING_EVENT_ITEMS[activeTab];
-  }, [activeTab]);
+  const filteredEvents = useMemo(() => {
+    const now = new Date();
+    const weekAhead = new Date();
+    weekAhead.setDate(now.getDate() + 7);
+
+    if (activeTab === 'today') {
+      return events.filter((event) => isSameDay(new Date(event.startTime), now));
+    }
+
+    if (activeTab === 'week') {
+      return events.filter((event) => {
+        const start = new Date(event.startTime);
+        return start >= now && start <= weekAhead;
+      });
+    }
+
+    if (activeTab === 'workshop') {
+      return events.filter((event) => {
+        const category = event.category?.name?.toLowerCase() || '';
+        return category.includes('workshop') || category.includes('เวิร์ก');
+      });
+    }
+
+    if (activeTab === 'nearby') {
+      return events.filter((event) => Boolean(event.locationName));
+    }
+
+    return events;
+  }, [activeTab, events]);
 
   return (
     <section className={`mt-6 md:mt-8 ${className}`}>
@@ -45,11 +79,21 @@ export const UpcomingEventsSection = ({ className = '' }: UpcomingEventsProps) =
       </div>
 
       <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory lg:grid lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 lg:overflow-visible lg:pb-0 lg:gap-4">
-        {events.map((event) => (
-          <div key={event.id} className="min-w-[18rem] sm:min-w-88 lg:min-w-0 lg:h-full">
-            <UpcomingEventCard event={event} />
+        {isLoading ? (
+          <div className="rounded-2xl border border-border bg-surface px-4 py-6 text-sm text-muted">
+            กำลังโหลดกิจกรรมที่กำลังจะมาถึง...
           </div>
-        ))}
+        ) : filteredEvents.length === 0 ? (
+          <div className="rounded-2xl border border-border bg-surface px-4 py-6 text-sm text-muted">
+            ไม่พบกิจกรรมตามตัวกรองที่เลือก
+          </div>
+        ) : (
+          filteredEvents.map((event) => (
+            <div key={event.eventId} className="min-w-[18rem] sm:min-w-88 lg:min-w-0 lg:h-full">
+              <UpcomingEventCard event={event} />
+            </div>
+          ))
+        )}
       </div>
     </section>
   );

@@ -16,4 +16,7 @@ export interface CategoryChipProps {
 
 export interface CategoryFilterProps {
   className?: string;
+  categories: CategoryItem[];
+  activeCategoryId: string;
+  onChange: (id: string) => void;
 }

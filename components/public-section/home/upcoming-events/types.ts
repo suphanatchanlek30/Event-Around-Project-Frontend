@@ -1,16 +1,8 @@
 // components/public-section/home/upcoming-events/types.ts
 
-export type UpcomingEventsTabKey = 'all' | 'today' | 'week' | 'workshop' | 'nearby';
+import type { EventSummary } from '@/services';
 
-export interface UpcomingEventItem {
-  id: string;
-  category: string;
-  title: string;
-  dateLabel: string;
-  timeLabel: string;
-  location: string;
-  accent: 'violet' | 'emerald' | 'amber' | 'cyan' | 'rose';
-}
+export type UpcomingEventsTabKey = 'all' | 'today' | 'week' | 'workshop' | 'nearby';
 
 export interface UpcomingEventsTab {
   key: UpcomingEventsTabKey;
@@ -20,4 +12,6 @@ export interface UpcomingEventsTab {
 
 export interface UpcomingEventsProps {
   className?: string;
+  events: EventSummary[];
+  isLoading?: boolean;
 }

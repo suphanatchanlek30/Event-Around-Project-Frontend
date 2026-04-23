@@ -34,20 +34,15 @@ const RecenterMap = ({ center }: { center: [number, number] }) => {
 export function MapSection({ center, events }: MapSectionProps) {
   return (
     <div className="w-full h-full relative z-0">
-
-      <style jsx global>{`
-      .leaflet-control-zoom {
-        display: none !important;
-      }
-    `}</style>
-
       <MapContainer
         center={center}
         zoom={13}
-        zoomControl={false}
+        minZoom={5}
+        maxZoom={19}
+        zoomControl={true}
         className="w-full h-full z-0"
-        doubleClickZoom={false}
-        scrollWheelZoom={false}
+        doubleClickZoom={true}
+        scrollWheelZoom={true}
         dragging={true}
         touchZoom={true}
       >
@@ -55,6 +50,7 @@ export function MapSection({ center, events }: MapSectionProps) {
         <TileLayer
           attribution="&copy; OpenStreetMap contributors"
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          maxZoom={19}
         />
 
         {events

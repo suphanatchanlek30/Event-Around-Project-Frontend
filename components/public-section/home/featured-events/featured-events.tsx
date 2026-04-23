@@ -1,12 +1,14 @@
 // components/public-section/home/featured-events/featured-events.tsx
 
 import Link from 'next/link';
-import { FEATURED_EVENTS } from './constants';
 import { FeaturedEventsListItem } from './featured-events-list-item';
 import { FeaturedEventsMainCard } from './featured-events-main-card';
 import { FeaturedEventsProps } from './types';
 
-export const FeaturedEvents = ({ className = '' }: FeaturedEventsProps) => {
+export const FeaturedEvents = ({ className = '', events, isLoading = false }: FeaturedEventsProps) => {
+  const spotlight = events[0];
+  const highlights = events.slice(1, 3);
+
   return (
     <section className={`mt-6 md:mt-8 mb-3 md:mb-4 ${className}`}>
       <div className="mb-3 md:mb-4 flex items-center justify-between gap-3">
@@ -17,12 +19,16 @@ export const FeaturedEvents = ({ className = '' }: FeaturedEventsProps) => {
       </div>
 
       <div className="grid gap-4 md:gap-5 lg:grid-cols-[minmax(0,1.9fr)_minmax(0,1fr)] lg:items-stretch">
-        <FeaturedEventsMainCard event={FEATURED_EVENTS.spotlight} />
+        <FeaturedEventsMainCard event={spotlight} isLoading={isLoading} />
 
         <div className="grid gap-4 md:gap-5 lg:auto-rows-fr lg:h-full">
-          {FEATURED_EVENTS.highlights.map((event) => (
-            <FeaturedEventsListItem key={event.id} event={event} />
-          ))}
+          {highlights.length > 0 ? (
+            highlights.map((event) => <FeaturedEventsListItem key={event.eventId} event={event} />)
+          ) : (
+            <div className="rounded-3xl border border-border bg-surface p-4 text-sm text-muted">
+              {isLoading ? 'กำลังโหลดกิจกรรมแนะนำ...' : 'ยังไม่มีกิจกรรมเพิ่มเติม'}
+            </div>
+          )}
         </div>
       </div>
     </section>
