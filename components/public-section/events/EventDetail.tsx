@@ -110,6 +110,11 @@ export default function EventDetail({ eventId }: EventDetailProps) {
               <div className="space-y-4 text-[14px] text-muted leading-relaxed font-medium">
                 <p>{event.shortDescription || ""}</p>
                 <p>{event.description}</p>
+                {event.status === "CANCELLED" && event.cancelReason ? (
+                  <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-rose-700">
+                    เหตุผลการยกเลิก: {event.cancelReason}
+                  </div>
+                ) : null}
               </div>
             </div>
 

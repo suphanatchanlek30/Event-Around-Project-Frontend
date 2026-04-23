@@ -33,21 +33,18 @@ export default function EventCard({ event, isSelected = false }: EventCardProps)
       onClick={() => router.push(`/events/${event.eventId}`)}
     >
       <div className="h-50 bg-linear-to-b from-[#1c1c28] to-[#12121a] relative flex items-start justify-between p-4 shrink-0">
-        <div className="absolute inset-0 flex flex-col items-center justify-center opacity-90 overflow-hidden pointer-events-none">
-          <div className="w-full flex justify-center translate-y-3">
-            <div className="relative w-3/4 max-w-50 h-16 border-b-[1.5px] border-l-[1.5px] border-r-[1.5px] border-[#2dd4bf]/20 flex items-center justify-center">
-              <div className="absolute top-0 w-[110%] h-[1.5px] bg-[#2dd4bf]/30" />
-              <div className="absolute -top-6 w-[80%] h-8 bg-[#3b82f6]/20 skew-x-45 blur-sm" />
-              <h2 className="text-[#38bdf8] text-[17px] font-light tracking-[0.2em] z-10">
-                TECH <span className="font-bold opacity-80">CONFERENCE</span>
-              </h2>
-            </div>
+        {event.coverImageUrl ? (
+          <img
+            src={event.coverImageUrl}
+            alt={event.title}
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center bg-linear-to-br from-[#1f2937] to-[#0f172a] px-4 text-center text-[#dbeafe]">
+            <p className="line-clamp-2 text-sm font-semibold tracking-wide">{event.title}</p>
           </div>
-          <div className="text-[#0ea5e9] mt-6 flex items-center gap-1.5 z-10">
-            <span className="text-lg opacity-80">⚙️</span>
-            <span className="text-lg font-light tracking-wide">safe wonk</span>
-          </div>
-        </div>
+        )}
+        <div className="absolute inset-0 bg-black/20" />
 
         <span className="bg-primary text-white text-[11px] px-3.5 py-1.5 rounded-full font-semibold z-10 shadow-sm">
           {event.status}

@@ -131,7 +131,29 @@ export const AdminApprovalsPage = () => {
               ) : (
                 events.map((event) => (
                   <tr key={event.eventId} className="border-t border-border text-sm">
-                    <td className="px-4 py-4 font-semibold text-foreground">{event.title}</td>
+                    <td className="px-4 py-4">
+                      <div className="flex items-start gap-3">
+                        <div className="h-14 w-22 shrink-0 overflow-hidden rounded-lg bg-surface-muted">
+                          {event.coverImageUrl ? (
+                            <img
+                              src={event.coverImageUrl}
+                              alt={event.title}
+                              className="h-full w-full object-cover"
+                            />
+                          ) : (
+                            <div className="flex h-full w-full items-center justify-center text-[10px] text-muted">
+                              ไม่มีรูป
+                            </div>
+                          )}
+                        </div>
+                        <div>
+                          <p className="font-semibold text-foreground">{event.title}</p>
+                          <p className="mt-1 line-clamp-2 text-xs text-muted">
+                            {event.shortDescription || "ไม่มีคำอธิบายสั้น"}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
                     <td className="px-4 py-4 text-muted">{event.organizer?.fullName || "-"}</td>
                     <td className="px-4 py-4 text-foreground">{event.category?.name || "-"}</td>
                     <td className="px-4 py-4 text-muted">{formatDate(event.startTime)}</td>

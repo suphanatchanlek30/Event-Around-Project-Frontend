@@ -53,6 +53,7 @@ export type EventDetail = {
   startTime: string;
   endTime: string;
   status: EventStatus;
+  cancelReason?: string;
   coverImageUrl?: string;
   category?: EventCategory;
   organizer?: EventOrganizer;
@@ -70,6 +71,40 @@ export type EventListQueryParams = {
   endTo?: string;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
+};
+
+export type NearbyEventQueryParams = EventListQueryParams & {
+  latitude: number;
+  longitude: number;
+  radiusKm?: number;
+};
+
+export type MapEventQueryParams = {
+  latitude?: number;
+  longitude?: number;
+  radiusKm?: number;
+  categoryId?: number;
+  search?: string;
+};
+
+export type NearbyEventSummary = EventSummary & {
+  latitude?: number;
+  longitude?: number;
+  distanceKm?: number;
+};
+
+export type MapEventSummary = {
+  eventId: number;
+  title: string;
+  latitude?: number;
+  longitude?: number;
+  locationName?: string;
+  distanceKm?: number;
+  startTime: string;
+  endTime?: string;
+  status: EventStatus;
+  coverImageUrl?: string;
+  category?: EventCategory;
 };
 
 export type CreateEventPayload = {
@@ -189,6 +224,28 @@ export const getUpcomingEvents = async (params?: EventListQueryParams) => {
 export const getActiveEvents = async (params?: EventListQueryParams) => {
   const response = await axiosInstance.get<EventApiEnvelope<EventSummary[]>>(
     `${EVENT_API_PREFIX}/active`,
+    {
+      params,
+    },
+  );
+
+  return response.data;
+};
+
+export const getNearbyEvents = async (params: NearbyEventQueryParams) => {
+  const response = await axiosInstance.get<EventApiEnvelope<NearbyEventSummary[]>>(
+    `${EVENT_API_PREFIX}/nearby`,
+    {
+      params,
+    },
+  );
+
+  return response.data;
+};
+
+export const getMapEvents = async (params?: MapEventQueryParams) => {
+  const response = await axiosInstance.get<EventApiEnvelope<MapEventSummary[]>>(
+    `${EVENT_API_PREFIX}/map`,
     {
       params,
     },

@@ -1,29 +1,44 @@
 "use client";
 
-import { useState } from "react";
+import type { CategoryItem } from "@/services";
 
-export function MapCategoryFilter() {
-  const categories = ["ทั้งหมด", "ดนตรี", "กีฬา", "อาหาร", "เทคโนโลยี", "ศิลปะ"];
-  const [active, setActive] = useState("ทั้งหมด");
+type MapCategoryFilterProps = {
+  categories: CategoryItem[];
+  activeCategoryId?: number;
+  onChange: (categoryId?: number) => void;
+};
 
+export function MapCategoryFilter({
+  categories,
+  activeCategoryId,
+  onChange,
+}: MapCategoryFilterProps) {
   return (
-    <div className="absolute top-25 left-0 w-full z-10">
-      <div className="flex gap-2 overflow-x-auto px-4 pb-2 scrollbar-hide">
-
-        {categories.map((cat) => (
+    <div className="w-full">
+      <div className="flex gap-2 overflow-x-auto rounded-2xl bg-white/95 p-2 shadow-md backdrop-blur-sm">
+        <button
+          type="button"
+          onClick={() => onChange(undefined)}
+          className={`shrink-0 rounded-full px-4 py-2 text-sm transition ${
+            activeCategoryId === undefined ? "bg-[#4338ca] text-white" : "bg-surface text-foreground"
+          }`}
+        >
+          ทั้งหมด
+        </button>
+        {categories.map((category) => (
           <button
-            key={cat}
-            onClick={() => setActive(cat)}
-            className={`flex-shrink-0 px-4 py-2 rounded-full text-sm whitespace-nowrap transition
-              ${active === cat
+            key={category.categoryId}
+            type="button"
+            onClick={() => onChange(category.categoryId)}
+            className={`shrink-0 rounded-full px-4 py-2 text-sm transition ${
+              activeCategoryId === category.categoryId
                 ? "bg-[#4338ca] text-white"
-                : "bg-white text-gray-700"
-              }`}
+                : "bg-surface text-foreground"
+            }`}
           >
-            {cat}
+            {category.name}
           </button>
         ))}
-
       </div>
     </div>
   );

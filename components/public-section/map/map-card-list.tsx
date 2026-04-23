@@ -2,35 +2,14 @@
 
 import { useState } from "react";
 import MapCard from "./map-card";
+import type { MapEventSummary } from "@/services";
 
-type Event = {
-  id: number;
-  title: string;
-  date: string;
-  imageUrl: string;
-  distance: string;
+type MapCardListProps = {
+  events: MapEventSummary[];
+  isLoading: boolean;
 };
 
-const mockEvents: Event[] = [
-  {
-    id: 1,
-    title: "Tech Talk: Future of AI in Design",
-    date: "พรุ่งนี้ เวลา 18:00 น.",
-    imageUrl:
-      "https://i.pinimg.com/control1/736x/10/bc/bd/10bcbdc51fdacda178fbf70267e19251.jpg",
-    distance: "0.8 กม.",
-  },
-  {
-    id: 2,
-    title: "Acoustic Garden Session",
-    date: "พรุ่งนี้ เวลา 18:00 น.",
-    imageUrl:
-      "https://i.pinimg.com/736x/69/d4/f5/69d4f553a801270cc080e78402855353.jpg",
-    distance: "1.2 กม.",
-  },
-];
-
-export function MapCardList() {
+export function MapCardList({ events, isLoading }: MapCardListProps) {
   const [bookmarked, setBookmarked] = useState<number[]>([]);
 
   const toggleBookmark = (id: number) => {
@@ -44,16 +23,24 @@ export function MapCardList() {
   return (
     <div className="w-full px-4 pb-6">
       <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory scroll-smooth">
-
-        {mockEvents.map((event) => (
-          <MapCard
-            key={event.id}
-            event={event}
-            isBookmarked={bookmarked.includes(event.id)}
-            onToggleBookmark={toggleBookmark}
-          />
-        ))}
-
+        {isLoading ? (
+          <div className="rounded-2xl bg-white/95 px-4 py-6 text-sm text-muted shadow-md">
+            กำลังโหลดกิจกรรมใกล้คุณ...
+          </div>
+        ) : events.length === 0 ? (
+          <div className="rounded-2xl bg-white/95 px-4 py-6 text-sm text-muted shadow-md">
+            ไม่พบกิจกรรมในตำแหน่งนี้
+          </div>
+        ) : (
+          events.map((event) => (
+            <MapCard
+              key={event.eventId}
+              event={event}
+              isBookmarked={bookmarked.includes(event.eventId)}
+              onToggleBookmark={toggleBookmark}
+            />
+          ))
+        )}
       </div>
     </div>
   );

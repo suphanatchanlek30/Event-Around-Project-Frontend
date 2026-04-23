@@ -102,8 +102,25 @@ export const RecentEventsTable = () => {
               events.map((event) => (
                 <tr key={event.eventId} className="bg-surface-muted/60 rounded-xl">
                   <td className="p-3 rounded-l-xl">
-                    <p className="font-semibold text-foreground leading-tight">{event.title}</p>
-                    <p className="text-sm text-muted mt-1">{event.locationName ?? "—"}</p>
+                    <div className="flex items-start gap-3">
+                      <div className="h-12 w-18 shrink-0 overflow-hidden rounded-lg bg-surface">
+                        {event.coverImageUrl ? (
+                          <img
+                            src={event.coverImageUrl}
+                            alt={event.title}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center text-[10px] text-muted">
+                            ไม่มีรูป
+                          </div>
+                        )}
+                      </div>
+                      <div>
+                        <p className="font-semibold text-foreground leading-tight">{event.title}</p>
+                        <p className="text-xs text-muted mt-1">{event.locationName ?? "—"}</p>
+                      </div>
+                    </div>
                   </td>
                   <td className="p-3">
                     <span
