@@ -75,7 +75,11 @@ export default function EventDetail({ eventId }: EventDetailProps) {
         </div>
 
         {event.coverImageUrl ? (
-          <img src={event.coverImageUrl} alt={event.title} className="h-full w-full object-cover" />
+          <img
+            src={event.coverImageUrl}
+            alt={event.title}
+            className="h-full w-full object-cover object-center"
+          />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center text-white/70">ไม่มีรูปหน้าปก</div>
         )}

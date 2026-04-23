@@ -33,7 +33,7 @@ export default function MapCard({
           <img
             src={event.coverImageUrl}
             alt={event.title}
-            className="w-full h-full object-cover"
+            className="h-full w-full object-cover object-center"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-indigo-100 to-cyan-100 text-xs font-semibold text-indigo-700">

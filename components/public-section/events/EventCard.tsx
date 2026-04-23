@@ -37,7 +37,7 @@ export default function EventCard({ event, isSelected = false }: EventCardProps)
           <img
             src={event.coverImageUrl}
             alt={event.title}
-            className="absolute inset-0 h-full w-full object-cover"
+            className="absolute inset-0 h-full w-full object-cover object-center"
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center bg-linear-to-br from-[#1f2937] to-[#0f172a] px-4 text-center text-[#dbeafe]">

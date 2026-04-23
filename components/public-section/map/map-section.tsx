@@ -70,7 +70,7 @@ export function MapSection({ center, events }: MapSectionProps) {
                     <img
                       src={event.coverImageUrl}
                       alt={event.title}
-                      className="mb-2 h-24 w-full rounded-md object-cover"
+                      className="mb-2 h-24 w-full rounded-md object-cover object-center"
                     />
                   ) : null}
                   <p className="font-semibold">{event.title}</p>
