@@ -1,10 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Calendar, Heart, MapPin, MonitorPlay, Share2 } from "lucide-react";
 
-import { EventDetail as EventDetailData, getEventDetail } from "@/services";
+import {
+  EventDetail as EventDetailData,
+  checkSavedEvent,
+  getEventDetail,
+  saveEvent,
+  unsaveEvent,
+} from "@/services";
+
+const EventLocationMap = dynamic(() => import("@/components/public-section/events/EventLocationMap"), {
+  ssr: false,
+});
 
 type EventDetailProps = {
   eventId: number;
@@ -31,6 +42,8 @@ export default function EventDetail({ eventId }: EventDetailProps) {
   const [event, setEvent] = useState<EventDetailData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveFeedback, setSaveFeedback] = useState("");
 
   useEffect(() => {
     const loadDetail = async () => {
@@ -49,6 +62,70 @@ export default function EventDetail({ eventId }: EventDetailProps) {
     loadDetail();
   }, [eventId]);
 
+  useEffect(() => {
+    const syncSavedStatus = async () => {
+      try {
+        const response = await checkSavedEvent(eventId);
+        setEvent((prev) => (prev ? { ...prev, isSaved: response.data.isSaved } : prev));
+      } catch {
+        // saved check is available for student only; ignore when not applicable
+      }
+    };
+
+    syncSavedStatus();
+  }, [eventId]);
+
+  const handleToggleSave = async () => {
+    if (!event || isSaving) {
+      return;
+    }
+
+    try {
+      setIsSaving(true);
+      setSaveFeedback("");
+
+      if (event.isSaved) {
+        await unsaveEvent(event.eventId);
+        setEvent((prev) =>
+          prev
+            ? {
+                ...prev,
+                isSaved: false,
+                savedCount: Math.max((prev.savedCount ?? 0) - 1, 0),
+              }
+            : prev,
+        );
+        setSaveFeedback("ยกเลิกบันทึกกิจกรรมแล้ว");
+      } else {
+        await saveEvent({ eventId: event.eventId });
+        setEvent((prev) =>
+          prev
+            ? {
+                ...prev,
+                isSaved: true,
+                savedCount: (prev.savedCount ?? 0) + 1,
+              }
+            : prev,
+        );
+        setSaveFeedback("บันทึกกิจกรรมเรียบร้อยแล้ว");
+      }
+    } catch (error) {
+      const status =
+        typeof error === "object" &&
+        error !== null &&
+        "response" in error
+          ? (error as { response?: { status?: number } }).response?.status
+          : undefined;
+      if (status === 401 || status === 403) {
+        setSaveFeedback("เฉพาะบัญชีนักศึกษาที่ล็อกอินแล้วเท่านั้น");
+      } else {
+        setSaveFeedback("บันทึกกิจกรรมไม่สำเร็จ");
+      }
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   if (isLoading) {
     return <div className="p-10 text-center text-muted">กำลังโหลดรายละเอียดกิจกรรม...</div>;
   }
@@ -56,6 +133,13 @@ export default function EventDetail({ eventId }: EventDetailProps) {
   if (!event) {
     return <div className="p-10 text-center text-rose-600">{errorMessage || "ไม่พบกิจกรรม"}</div>;
   }
+
+  const hasCoordinates =
+    typeof event.latitude === "number" && Number.isFinite(event.latitude) &&
+    typeof event.longitude === "number" && Number.isFinite(event.longitude);
+  const googleMapsUrl = hasCoordinates
+    ? `https://www.google.com/maps?q=${event.latitude},${event.longitude}`
+    : "";
 
   return (
     <div className="w-full bg-[#f8f9fa] min-h-screen pb-24 md:pb-0">
@@ -68,7 +152,12 @@ export default function EventDetail({ eventId }: EventDetailProps) {
             <button className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-white/30 transition-colors">
               <Share2 className="w-4 h-4" />
             </button>
-            <button className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-white/30 transition-colors">
+            <button
+              type="button"
+              disabled={isSaving}
+              onClick={handleToggleSave}
+              className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-white/30 transition-colors disabled:opacity-70"
+            >
               <Heart className={`w-4 h-4 ${event.isSaved ? "fill-current" : ""}`} />
             </button>
           </div>
@@ -124,10 +213,16 @@ export default function EventDetail({ eventId }: EventDetailProps) {
 
             <div className="w-full lg:w-[320px] shrink-0">
               <div className="bg-[#f8f9fa] rounded-3xl p-6 border border-[#eef0f4]">
-                <button className="w-full py-3.5 bg-primary hover:bg-primary/90 transition-colors text-white rounded-2xl text-[15px] font-bold mb-3 shadow-[0_4px_12px_rgba(67,56,202,0.2)]">
-                  ลงทะเบียนตอนนี้
+                <button
+                  type="button"
+                  disabled={isSaving}
+                  onClick={handleToggleSave}
+                  className="w-full py-3.5 bg-primary hover:bg-primary/90 transition-colors text-white rounded-2xl text-[15px] font-bold mb-3 shadow-[0_4px_12px_rgba(67,56,202,0.2)] disabled:opacity-70"
+                >
+                  {isSaving ? "กำลังบันทึก..." : event.isSaved ? "ยกเลิกบันทึกกิจกรรม" : "บันทึกกิจกรรมนี้"}
                 </button>
                 <div className="text-center text-[11px] text-muted font-medium mb-6">มีผู้สนใจ {event.savedCount || 0} คน</div>
+                {saveFeedback ? <p className="mb-4 text-center text-xs text-muted">{saveFeedback}</p> : null}
 
                 <div className="space-y-6">
                   <div className="flex gap-4">
@@ -147,16 +242,34 @@ export default function EventDetail({ eventId }: EventDetailProps) {
                     <div>
                       <div className="text-[13px] font-bold text-foreground mb-0.5">{event.locationName}</div>
                       <div className="text-[11px] text-muted leading-snug">Lat {event.latitude || "-"}, Lng {event.longitude || "-"}</div>
+                      {hasCoordinates ? (
+                        <a
+                          href={googleMapsUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="mt-2 inline-flex rounded-lg border border-indigo-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-indigo-700 hover:bg-indigo-50"
+                        >
+                          เปิดใน Google Maps
+                        </a>
+                      ) : (
+                        <span className="mt-2 inline-flex text-[11px] text-slate-400">ยังไม่มีพิกัดแผนที่</span>
+                      )}
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-6 h-30 bg-linear-to-br from-[#e0e7ff] to-[#f3f4f6] rounded-2xl relative overflow-hidden flex items-center justify-center border border-[#eef0f4]">
-                  <div className="absolute inset-0 bg-[#e5e7eb] opacity-50" />
-                  <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center z-10 shadow-lg shadow-red-500/30">
-                    <div className="w-3 h-3 bg-white rounded-full" />
+                {hasCoordinates ? (
+                  <EventLocationMap
+                    latitude={event.latitude as number}
+                    longitude={event.longitude as number}
+                    title={event.title}
+                    locationName={event.locationName}
+                  />
+                ) : (
+                  <div className="mt-6 flex h-36 items-center justify-center rounded-2xl border border-[#eef0f4] bg-surface-muted text-xs text-muted">
+                    ไม่มีพิกัดสำหรับแสดงแผนที่
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </div>

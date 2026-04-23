@@ -37,6 +37,7 @@ export type EventSummary = {
   status: EventStatus;
   coverImageUrl?: string;
   savedCount?: number;
+  isSaved?: boolean;
   shortDescription?: string;
   category?: EventCategory;
   organizer?: EventOrganizer;

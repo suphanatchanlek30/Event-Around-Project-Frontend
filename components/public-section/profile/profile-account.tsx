@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { getMe, getStoredUser } from "@/services";
+import { getMe, getSavedEvents, getStoredUser } from "@/services";
 import type { AuthUser } from "@/services/authService";
 import EditProfileModal from "@/components/public-section/profile/edit-profile-modal";
 
@@ -18,6 +18,11 @@ export default function ProfileAccount() {
             "https://i.pinimg.com/control1/1200x/5d/5a/93/5d5a93d474d9ed4ce1866527be582334.jpg",
         institution: "Event Around Community",
     });
+    const [stats, setStats] = useState({
+        joinedCount: 8,
+        bookmarkCount: 0,
+        groupCount: 4,
+    });
 
     const handleProfileUpdated = (updated: AuthUser) => {
         setUser((prev) => ({
@@ -29,12 +34,6 @@ export default function ProfileAccount() {
                 updated.profileImageUrl ??
                 "https://i.pinimg.com/control1/1200x/5d/5a/93/5d5a93d474d9ed4ce1866527be582334.jpg",
         }));
-    };
-
-    const stats = {
-        joinedCount: 8,
-        bookmarkCount: 5,
-        groupCount: 4,
     };
 
     const handleEdit = () => {
@@ -57,16 +56,26 @@ export default function ProfileAccount() {
         const loadProfile = async () => {
             try {
                 setProfileError("");
-                const response = await getMe();
+                const [profileResponse, savedResponse] = await Promise.allSettled([
+                    getMe(),
+                    getSavedEvents({ page: 1, pageSize: 1, sortBy: "savedAt", sortOrder: "desc" }),
+                ]);
 
-                if (response.success) {
+                if (profileResponse.status === "fulfilled" && profileResponse.value.success) {
                     setUser((prev) => ({
                         ...prev,
-                        name: response.data.fullName,
-                        email: response.data.email,
-                        role: response.data.role,
+                        name: profileResponse.value.data.fullName,
+                        email: profileResponse.value.data.email,
+                        role: profileResponse.value.data.role,
                         account:
-                            response.data.profileImageUrl ?? prev.account,
+                            profileResponse.value.data.profileImageUrl ?? prev.account,
+                    }));
+                }
+
+                if (savedResponse.status === "fulfilled") {
+                    setStats((prev) => ({
+                        ...prev,
+                        bookmarkCount: savedResponse.value.meta?.totalItems ?? 0,
                     }));
                 }
             } catch {

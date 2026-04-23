@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MapCard from "./map-card";
-import type { NearbyEventSummary } from "@/services";
+import { checkSavedEvent, saveEvent, unsaveEvent, type NearbyEventSummary } from "@/services";
 
 type MapCardListProps = {
   events: NearbyEventSummary[];
@@ -11,13 +11,46 @@ type MapCardListProps = {
 
 export function MapCardList({ events, isLoading }: MapCardListProps) {
   const [bookmarked, setBookmarked] = useState<number[]>([]);
+  const [processingId, setProcessingId] = useState<number | null>(null);
 
-  const toggleBookmark = (id: number) => {
-    setBookmarked((prev) =>
-      prev.includes(id)
-        ? prev.filter((i) => i !== id)
-        : [...prev, id]
-    );
+  useEffect(() => {
+    const syncBookmarks = async () => {
+      if (events.length === 0) {
+        setBookmarked([]);
+        return;
+      }
+
+      const checks = await Promise.allSettled(events.map((event) => checkSavedEvent(event.eventId)));
+      const savedIds = checks
+        .map((result, index) => (result.status === "fulfilled" && result.value.data.isSaved ? events[index].eventId : null))
+        .filter((id): id is number => id !== null);
+      setBookmarked(savedIds);
+    };
+
+    syncBookmarks();
+  }, [events]);
+
+  const toggleBookmark = async (eventId: number) => {
+    if (processingId === eventId) {
+      return;
+    }
+
+    try {
+      setProcessingId(eventId);
+      const currentlySaved = bookmarked.includes(eventId);
+
+      if (currentlySaved) {
+        await unsaveEvent(eventId);
+        setBookmarked((prev) => prev.filter((id) => id !== eventId));
+      } else {
+        await saveEvent({ eventId });
+        setBookmarked((prev) => [...prev, eventId]);
+      }
+    } catch {
+      // ignore when role is not student or unauthenticated
+    } finally {
+      setProcessingId(null);
+    }
   };
 
   return (
@@ -37,6 +70,7 @@ export function MapCardList({ events, isLoading }: MapCardListProps) {
               key={event.eventId}
               event={event}
               isBookmarked={bookmarked.includes(event.eventId)}
+              isProcessing={processingId === event.eventId}
               onToggleBookmark={toggleBookmark}
             />
           ))

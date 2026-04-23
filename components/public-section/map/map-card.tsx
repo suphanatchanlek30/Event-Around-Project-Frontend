@@ -8,6 +8,7 @@ import type { NearbyEventSummary } from "@/services";
 type Props = {
   event: NearbyEventSummary;
   isBookmarked: boolean;
+  isProcessing?: boolean;
   onToggleBookmark: (eventId: number) => void;
 };
 
@@ -23,6 +24,7 @@ const formatDateTime = (dateString: string) => {
 export default function MapCard({
   event,
   isBookmarked,
+  isProcessing = false,
   onToggleBookmark,
 }: Props) {
   return (
@@ -53,11 +55,13 @@ export default function MapCard({
           </div>
 
           <button
+            type="button"
+            disabled={isProcessing}
             onClick={(e) => {
               e.stopPropagation();
               onToggleBookmark(event.eventId);
             }}
-            className="p-1 rounded-full hover:bg-gray-100 transition shrink-0"
+            className="p-1 rounded-full hover:bg-gray-100 transition shrink-0 disabled:opacity-60"
           >
             <Bookmark
               size={16}

@@ -1,9 +1,10 @@
 "use client";
 
+import { useEffect, useState, type MouseEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Clock, Heart, MapPin } from "lucide-react";
 
-import type { EventSummary } from "@/services";
+import { checkSavedEvent, saveEvent, unsaveEvent, type EventSummary } from "@/services";
 
 type EventCardProps = {
   event: EventSummary;
@@ -22,6 +23,43 @@ const formatDateTime = (dateString: string) => {
 
 export default function EventCard({ event, isSelected = false }: EventCardProps) {
   const router = useRouter();
+  const [isSaved, setIsSaved] = useState(Boolean(event.isSaved));
+  const [isTogglingSave, setIsTogglingSave] = useState(false);
+
+  useEffect(() => {
+    const syncSavedStatus = async () => {
+      try {
+        const response = await checkSavedEvent(event.eventId);
+        setIsSaved(response.data.isSaved);
+      } catch {
+        // not student or not logged in
+      }
+    };
+
+    syncSavedStatus();
+  }, [event.eventId]);
+
+  const handleToggleSave = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    if (isTogglingSave) {
+      return;
+    }
+
+    try {
+      setIsTogglingSave(true);
+      if (isSaved) {
+        await unsaveEvent(event.eventId);
+        setIsSaved(false);
+      } else {
+        await saveEvent({ eventId: event.eventId });
+        setIsSaved(true);
+      }
+    } catch {
+      // silent fail in card context
+    } finally {
+      setIsTogglingSave(false);
+    }
+  };
 
   return (
     <div
@@ -50,12 +88,12 @@ export default function EventCard({ event, isSelected = false }: EventCardProps)
           {event.status}
         </span>
         <button
+          type="button"
+          disabled={isTogglingSave}
           className="bg-white/10 backdrop-blur-md rounded-full p-2.5 hover:bg-white/20 transition-colors z-10"
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
+          onClick={handleToggleSave}
         >
-          <Heart className="h-4.5 w-4.5 text-white" />
+          <Heart className={`h-4.5 w-4.5 text-white ${isSaved ? "fill-current" : ""}`} />
         </button>
 
         <div className="absolute bottom-3 left-4 flex items-center gap-1.5 text-white text-[11px] font-medium z-10">
