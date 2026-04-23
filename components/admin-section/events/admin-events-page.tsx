@@ -1,8 +1,9 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { ChangeEvent, useMemo, useRef, useState } from 'react';
 import { FaCloudUploadAlt, FaMapMarkerAlt, FaRegClock } from 'react-icons/fa';
 import { FiCheckCircle, FiEye, FiXCircle } from 'react-icons/fi';
+import { uploadImageToCloudinary } from '@/services/cloudinaryService';
 import { ADMIN_EVENTS } from '../constants';
 
 const getStatusClassName = (status: string) => {
@@ -51,6 +52,39 @@ export const AdminEventsPage = () => {
   const [location, setLocation] = useState('Main Campus Auditorium');
   const [startTime, setStartTime] = useState('2026-04-24T16:00');
   const [endTime, setEndTime] = useState('2026-04-24T19:00');
+  const [coverImageUrl, setCoverImageUrl] = useState('');
+  const [isUploadingCover, setIsUploadingCover] = useState(false);
+  const [uploadError, setUploadError] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const triggerCoverUpload = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleCoverChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      setUploadError('กรุณาอัปโหลดไฟล์รูปภาพเท่านั้น');
+      return;
+    }
+
+    try {
+      setUploadError('');
+      setIsUploadingCover(true);
+      const uploaded = await uploadImageToCloudinary(file, 'events/covers');
+      setCoverImageUrl(uploaded.url);
+    } catch {
+      setUploadError('อัปโหลดรูปไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
+    } finally {
+      setIsUploadingCover(false);
+      event.target.value = '';
+    }
+  };
 
   const previewDate = useMemo(() => {
     if (!startTime) {
@@ -122,13 +156,26 @@ export const AdminEventsPage = () => {
 
               <label className="block">
                 <span className="text-sm font-medium text-foreground">รูปหน้าปก</span>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleCoverChange}
+                />
                 <button
                   type="button"
+                  onClick={triggerCoverUpload}
+                  disabled={isUploadingCover}
                   className="mt-1 w-full h-11 rounded-xl border border-dashed border-border bg-surface text-sm text-link font-medium inline-flex items-center justify-center gap-2 hover:bg-surface-muted"
                 >
                   <FaCloudUploadAlt />
-                  อัปโหลดรูปปก
+                  {isUploadingCover ? 'กำลังอัปโหลด...' : 'อัปโหลดรูปปก'}
                 </button>
+                {coverImageUrl ? (
+                  <p className="mt-2 text-xs text-emerald-700">อัปโหลดสำเร็จแล้ว</p>
+                ) : null}
+                {uploadError ? <p className="mt-2 text-xs text-rose-600">{uploadError}</p> : null}
               </label>
             </div>
 
@@ -202,7 +249,11 @@ export const AdminEventsPage = () => {
           <aside className="space-y-3">
             <h2 className="text-base md:text-lg font-semibold text-foreground">Live Preview</h2>
             <article className="rounded-2xl border border-border bg-surface shadow-sm overflow-hidden">
-              <div className="h-40 bg-gradient-to-r from-indigo-800 via-purple-700 to-violet-600" />
+              {coverImageUrl ? (
+                <img src={coverImageUrl} alt="ภาพหน้าปกกิจกรรม" className="h-40 w-full object-cover" />
+              ) : (
+                <div className="h-40 bg-linear-to-r from-indigo-800 via-purple-700 to-violet-600" />
+              )}
               <div className="p-4 space-y-2">
                 <span className="inline-flex px-2 py-1 rounded-full text-[11px] font-semibold bg-indigo-100 text-indigo-700">
                   {category}
@@ -239,7 +290,7 @@ export const AdminEventsPage = () => {
       <div className="rounded-2xl bg-surface border border-border p-4 md:p-6 shadow-sm">
         <h2 className="text-2xl font-semibold text-foreground mb-4">รายการอีเวนต์ทั้งหมด</h2>
         <div className="overflow-x-auto rounded-xl border border-border">
-          <table className="min-w-[860px] w-full">
+          <table className="min-w-215 w-full">
             <thead className="bg-surface-muted/70">
               <tr className="text-left text-xs uppercase tracking-wide text-muted">
                 <th className="px-4 py-3">ชื่อกิจกรรม</th>
