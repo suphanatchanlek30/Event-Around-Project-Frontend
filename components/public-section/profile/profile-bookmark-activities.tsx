@@ -1,29 +1,25 @@
 "use client";
 
+import { MapPin } from "lucide-react";
+
 export default function ProfileBookmarkActivities() {
     //mock data
     const savedEvents = [
         {
             id: 1,
             title: "AI in Design Hackathon",
-            date: "24 ต.ค. 10:00น.",
-            location: "Bangkok",
+            date: "24 ต.ค. 10:00 น.",
+            location: "Thammasat University",
             image: "https://i.pinimg.com/736x/d0/27/91/d02791d236c8b809fcdd18d6b1bf99cf.jpg",
         },
         {
             id: 2,
-            title: "UX/UI Workshop",
-            date: "20 May 2026",
+            title: "Jazz Night under Stars",
+            date: "8 ต.ค. 10:00 น.",
             location: "Thammasat University",
             image: "https://i.pinimg.com/1200x/a7/e3/9e/a7e39e194e30e161e0f669efe2baa866.jpg",
         },
-        {
-            id: 3,
-            title: "Startup Pitch Day",
-            date: "28 May 2026",
-            location: "Online",
-            image: "https://i.pinimg.com/736x/42/ae/ff/42aefffa3ba7650a0bee7c614f8f37d5.jpg",
-        },
+
     ];
 
     return (
@@ -56,14 +52,24 @@ export default function ProfileBookmarkActivities() {
                         />
 
                         {/* Content */}
-                        <div className="p-3">
-                            <h3 className="font-semibold text-gray-800 text-sm truncate">
+                        <div className="p-3 text-left">
+
+                            {/*Date */}
+                            <p className="text-xs text-medium text-indigo-600">
+                                {event.date}
+                            </p>
+
+                            {/*Title */}
+                            <h3 className="mt-1 font-semibold text-gray-800 text-sm leading-snug">
                                 {event.title}
                             </h3>
 
-                            <p className="text-xs text-gray-500">
-                                {event.date}
-                            </p>
+                            {/*Location */}
+                            <div className="mt-1 flex items-center gap-1 text-xs text-gray-500">
+                                <MapPin size={12} />
+                                <span>{event.location}</span>
+                            </div>
+
                         </div>
                     </div>
                 ))}
