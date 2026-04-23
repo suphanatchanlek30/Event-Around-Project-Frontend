@@ -1,6 +1,7 @@
 "use client";
 
 import ProfileBookmarkActivities from "./profile-bookmark-activities";
+import ProfileMyActivities from "./profile-my-activities";
 
 export default function ProfileAccount() {
     //mcok data
@@ -88,6 +89,7 @@ export default function ProfileAccount() {
                     </div>
                     
                     <ProfileBookmarkActivities />
+                    <ProfileMyActivities />
 
                 </div>
             </div>
