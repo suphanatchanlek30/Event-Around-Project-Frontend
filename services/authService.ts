@@ -1,0 +1,190 @@
+import axiosInstance from "@/services/axiosInstance";
+
+const AUTH_API_PREFIX = "/api/v1/auth";
+const ACCESS_TOKEN_KEY = "token";
+const REFRESH_TOKEN_KEY = "refreshToken";
+const AUTH_USER_KEY = "authUser";
+
+export type UserRole = "STUDENT" | "ORGANIZER" | "ADMIN";
+
+export type AuthUser = {
+  userId: number;
+  fullName: string;
+  email: string;
+  role: UserRole;
+  isActive?: boolean;
+  profileImageUrl?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type ApiEnvelope<T> = {
+  success: boolean;
+  message: string;
+  data: T;
+};
+
+export type RegisterPayload = {
+  fullName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
+
+export type LoginPayload = {
+  email: string;
+  password: string;
+};
+
+export type RegisterResponseData = {
+  userId: number;
+  fullName: string;
+  email: string;
+  role: UserRole;
+};
+
+export type LoginResponseData = {
+  userId: number;
+  fullName: string;
+  email: string;
+  role: UserRole;
+  accessToken: string;
+  refreshToken: string;
+  tokenType?: string;
+  expiresIn?: number;
+};
+
+export type RefreshTokenResponseData = {
+  accessToken: string;
+  refreshToken?: string;
+  tokenType?: string;
+  expiresIn?: number;
+};
+
+export type LogoutPayload = {
+  refreshToken: string;
+};
+
+const persistAuth = (payload: LoginResponseData) => {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  localStorage.setItem(ACCESS_TOKEN_KEY, payload.accessToken);
+  localStorage.setItem(REFRESH_TOKEN_KEY, payload.refreshToken);
+
+  const user: AuthUser = {
+    userId: payload.userId,
+    fullName: payload.fullName,
+    email: payload.email,
+    role: payload.role,
+  };
+  localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
+};
+
+export const clearAuthStorage = () => {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  localStorage.removeItem(ACCESS_TOKEN_KEY);
+  localStorage.removeItem(REFRESH_TOKEN_KEY);
+  localStorage.removeItem(AUTH_USER_KEY);
+};
+
+export const getStoredRefreshToken = () => {
+  if (typeof window === "undefined") {
+    return "";
+  }
+
+  return localStorage.getItem(REFRESH_TOKEN_KEY) ?? "";
+};
+
+export const getStoredUser = (): AuthUser | null => {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  const raw = localStorage.getItem(AUTH_USER_KEY);
+  if (!raw) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(raw) as AuthUser;
+  } catch {
+    return null;
+  }
+};
+
+export const registerStudent = async (payload: RegisterPayload) => {
+  const response = await axiosInstance.post<ApiEnvelope<RegisterResponseData>>(
+    `${AUTH_API_PREFIX}/register/student`,
+    payload,
+  );
+
+  return response.data;
+};
+
+export const registerOrganizer = async (payload: RegisterPayload) => {
+  const response = await axiosInstance.post<ApiEnvelope<RegisterResponseData>>(
+    `${AUTH_API_PREFIX}/register/organizer`,
+    payload,
+  );
+
+  return response.data;
+};
+
+export const login = async (payload: LoginPayload) => {
+  const response = await axiosInstance.post<ApiEnvelope<LoginResponseData>>(
+    `${AUTH_API_PREFIX}/login`,
+    payload,
+  );
+
+  if (response.data?.success) {
+    persistAuth(response.data.data);
+  }
+
+  return response.data;
+};
+
+export const refreshAccessToken = async (refreshToken?: string) => {
+  const resolvedRefreshToken = refreshToken || getStoredRefreshToken();
+
+  const response = await axiosInstance.post<ApiEnvelope<RefreshTokenResponseData>>(
+    `${AUTH_API_PREFIX}/refresh`,
+    { refreshToken: resolvedRefreshToken },
+  );
+
+  if (response.data?.success && typeof window !== "undefined") {
+    const nextAccessToken = response.data.data.accessToken;
+    localStorage.setItem(ACCESS_TOKEN_KEY, nextAccessToken);
+
+    if (response.data.data.refreshToken) {
+      localStorage.setItem(REFRESH_TOKEN_KEY, response.data.data.refreshToken);
+    }
+  }
+
+  return response.data;
+};
+
+export const logout = async (refreshToken?: string) => {
+  const resolvedRefreshToken = refreshToken || getStoredRefreshToken();
+
+  const response = await axiosInstance.post<ApiEnvelope<null>>(`${AUTH_API_PREFIX}/logout`, {
+    refreshToken: resolvedRefreshToken,
+  });
+
+  clearAuthStorage();
+  return response.data;
+};
+
+export const getMe = async () => {
+  const response = await axiosInstance.get<ApiEnvelope<AuthUser>>(`${AUTH_API_PREFIX}/me`);
+
+  if (response.data?.success && typeof window !== "undefined") {
+    localStorage.setItem(AUTH_USER_KEY, JSON.stringify(response.data.data));
+  }
+
+  return response.data;
+};

@@ -1,12 +1,27 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
+import { getMe, getStoredRefreshToken, getStoredUser, logout } from "@/services";
+
 export default function ProfileAccount() {
-    //mcok data
-    const user = {
-        name: "Papaya Salad",
-        account: "https://i.pinimg.com/control1/1200x/5d/5a/93/5d5a93d474d9ed4ce1866527be582334.jpg",
-        institution: "Computer Science Hogwarts University",
-    };
+    const router = useRouter();
+    const [isLoadingProfile, setIsLoadingProfile] = useState(true);
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
+    const [profileError, setProfileError] = useState("");
+    const [user, setUser] = useState(() => {
+        const storedUser = getStoredUser();
+
+        return {
+            name: storedUser?.fullName ?? "Guest User",
+            email: storedUser?.email ?? "-",
+            role: storedUser?.role ?? "STUDENT",
+            account:
+                "https://i.pinimg.com/control1/1200x/5d/5a/93/5d5a93d474d9ed4ce1866527be582334.jpg",
+            institution: "Event Around Community",
+        };
+    });
 
     const stats = {
         joinedCount: 8,
@@ -20,6 +35,44 @@ export default function ProfileAccount() {
     const handleShare = () => {
         console.log("กดแชร์โปรไฟล์");
     };
+
+    const handleLogout = async () => {
+        try {
+            setIsLoggingOut(true);
+            setProfileError("");
+            await logout(getStoredRefreshToken());
+            router.push("/login");
+            router.refresh();
+        } catch {
+            setProfileError("ออกจากระบบไม่สำเร็จ กรุณาลองใหม่");
+        } finally {
+            setIsLoggingOut(false);
+        }
+    };
+
+    useEffect(() => {
+        const loadProfile = async () => {
+            try {
+                setProfileError("");
+                const response = await getMe();
+
+                if (response.success) {
+                    setUser((prev) => ({
+                        ...prev,
+                        name: response.data.fullName,
+                        email: response.data.email,
+                        role: response.data.role,
+                    }));
+                }
+            } catch {
+                setProfileError("ไม่สามารถดึงข้อมูลผู้ใช้ได้ในขณะนี้");
+            } finally {
+                setIsLoadingProfile(false);
+            }
+        };
+
+        loadProfile();
+    }, []);
 
     return (
         <div className="w-full">
@@ -40,6 +93,20 @@ export default function ProfileAccount() {
                     {user.institution}
                 </p>
 
+                <p className="mt-1 text-xs text-gray-500">
+                    {user.email} | {user.role}
+                </p>
+
+                {isLoadingProfile ? (
+                    <p className="mt-2 text-xs text-gray-500">กำลังโหลดโปรไฟล์...</p>
+                ) : null}
+
+                {profileError ? (
+                    <p className="mt-2 rounded-lg bg-rose-50 px-3 py-2 text-xs text-rose-700">
+                        {profileError}
+                    </p>
+                ) : null}
+
                 {/*button*/}
                 <div className="mt-6 flex gap-3 w-full justify-center">
                     <button
@@ -54,6 +121,14 @@ export default function ProfileAccount() {
                         onClick={handleShare}
                     >
                         แชร์โปรไฟล์
+                    </button>
+
+                    <button
+                        className="px-5 py-2 bg-rose-100 text-rose-700 font-semibold rounded-xl hover:bg-rose-200 transition disabled:opacity-70"
+                        onClick={handleLogout}
+                        disabled={isLoggingOut}
+                    >
+                        {isLoggingOut ? "กำลังออกจากระบบ..." : "ออกจากระบบ"}
                     </button>
                 </div>
                 

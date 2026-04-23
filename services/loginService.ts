@@ -1,24 +1,38 @@
-import axiosInstance from "@/services/axiosInstance";
+import { login } from "@/services/authService";
 
-export type LoginPayload = {
+export type LoginServicePayload = {
   email: string;
   password: string;
 };
 
-export type LoginResult = {
-  status: "success" | "fail";
-  message?: string;
+export type LoginServiceResult = {
+  success: boolean;
+  message: string;
   [key: string]: unknown;
 };
 
-export const loginService = async (values: LoginPayload): Promise<LoginResult> => {
+export const loginService = async (
+  values: LoginServicePayload,
+): Promise<LoginServiceResult> => {
   try {
-    const response = await axiosInstance.post("/auth/login", values);
-    return response.data as LoginResult;
-  } catch {
+    const response = await login(values);
+    return response as LoginServiceResult;
+  } catch (error) {
+    const fallbackMessage = "เข้าสู่ระบบล้มเหลว";
+
+    if (typeof error === "object" && error !== null && "response" in error) {
+      const response = (error as { response?: { data?: { message?: string } } }).response;
+      const message = response?.data?.message ?? fallbackMessage;
+
+      return {
+        success: false,
+        message,
+      };
+    }
+
     return {
-      status: "fail",
-      message: "เข้าสู่ระบบล้มเหลว",
+      success: false,
+      message: fallbackMessage,
     };
   }
 };

@@ -29,6 +29,8 @@ axiosInstance.interceptors.response.use(
   (error) => {
     if (typeof window !== "undefined" && error.response?.status === 401) {
       localStorage.removeItem("token");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("authUser");
       window.location.href = "/login";
     }
 
