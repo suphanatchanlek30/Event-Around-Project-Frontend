@@ -2,6 +2,7 @@
 
 import ProfileBookmarkActivities from "./profile-bookmark-activities";
 import ProfileMyActivities from "./profile-my-activities";
+import ProfileSetting from "./profile-setting";
 
 export default function ProfileAccount() {
     //mcok data
@@ -90,6 +91,7 @@ export default function ProfileAccount() {
                     
                     <ProfileBookmarkActivities />
                     <ProfileMyActivities />
+                    <ProfileSetting />
 
                 </div>
             </div>
