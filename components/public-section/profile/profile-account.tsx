@@ -1,5 +1,7 @@
 "use client";
 
+import ProfileBookmarkActivities from "./profile-bookmark-activities";
+
 export default function ProfileAccount() {
     //mcok data
     const user = {
@@ -84,7 +86,8 @@ export default function ProfileAccount() {
 
                         </div>
                     </div>
-
+                    
+                    <ProfileBookmarkActivities />
 
                 </div>
             </div>
