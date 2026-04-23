@@ -391,7 +391,6 @@ export const AdminEventsPage = () => {
               <option value="DRAFT">DRAFT</option>
               <option value="PUBLISHED">PUBLISHED</option>
               <option value="CANCELLED">CANCELLED</option>
-              <option value="PENDING_APPROVAL">PENDING_APPROVAL</option>
             </select>
             <button type="button" onClick={loadEvents} className="h-10 px-4 rounded-xl border border-border text-sm font-semibold">
               ค้นหา

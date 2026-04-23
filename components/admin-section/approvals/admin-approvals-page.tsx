@@ -28,13 +28,20 @@ export const AdminApprovalsPage = () => {
       const response = await getPublicEvents({
         page: 1,
         pageSize: 50,
-        status: "PENDING_APPROVAL",
+        status: "DRAFT",
         sortBy: "startTime",
         sortOrder: "asc",
       });
       setEvents(response.data);
-    } catch {
-      setErrorMessage("โหลดรายการรออนุมัติไม่สำเร็จ");
+    } catch (error) {
+      const msg =
+        typeof error === "object" &&
+        error !== null &&
+        "response" in error
+          ? (error as { response?: { data?: { message?: string }; status?: number } }).response?.data?.message ??
+            `HTTP ${(error as { response?: { status?: number } }).response?.status ?? "error"}`
+          : "โหลดรายการรออนุมัติไม่สำเร็จ";
+      setErrorMessage(msg);
       setEvents([]);
     } finally {
       setIsLoading(false);

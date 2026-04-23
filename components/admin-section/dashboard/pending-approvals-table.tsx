@@ -17,7 +17,7 @@ export const PendingApprovalsTable = () => {
       const response = await getPublicEvents({
         page: 1,
         pageSize: 5,
-        status: "PENDING_APPROVAL",
+        status: "DRAFT",
         sortBy: "startTime",
         sortOrder: "asc",
       });

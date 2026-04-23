@@ -86,7 +86,9 @@ export type CreateEventPayload = {
   status: "DRAFT" | "PUBLISHED";
 };
 
-export type UpdateEventPayload = Partial<CreateEventPayload>;
+export type UpdateEventPayload = Partial<Omit<CreateEventPayload, "status">> & {
+  status?: "DRAFT" | "PUBLISHED";
+};
 
 export type CancelEventPayload = {
   reason: string;

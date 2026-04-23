@@ -31,7 +31,7 @@ export const AdminStatsCards = () => {
       try {
         const [allEvents, pending, published, cats] = await Promise.allSettled([
           getPublicEvents({ page: 1, pageSize: 1 }),
-          getPublicEvents({ page: 1, pageSize: 1, status: "PENDING_APPROVAL" }),
+          getPublicEvents({ page: 1, pageSize: 1, status: "DRAFT" }),
           getPublicEvents({ page: 1, pageSize: 1, status: "PUBLISHED" }),
           getCategories({ includeInactive: false }),
         ]);

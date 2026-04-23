@@ -10,14 +10,12 @@ import { EventSummary, getMyEvents } from "@/services";
 const getStatusClassName = (status: string) => {
   if (status === "PUBLISHED") return "bg-emerald-100 text-emerald-700";
   if (status === "CANCELLED") return "bg-rose-100 text-rose-700";
-  if (status === "PENDING_APPROVAL") return "bg-amber-100 text-amber-700";
   return "bg-slate-200 text-slate-600";
 };
 
 const getStatusLabel = (status: string) => {
   if (status === "PUBLISHED") return "เผยแพร่แล้ว";
   if (status === "CANCELLED") return "ยกเลิก";
-  if (status === "PENDING_APPROVAL") return "รออนุมัติ";
   return "ฉบับร่าง";
 };
 
