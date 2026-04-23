@@ -179,12 +179,45 @@ export const logout = async (refreshToken?: string) => {
   return response.data;
 };
 
+export type UpdateMePayload = {
+  fullName?: string;
+  profileImageUrl?: string;
+};
+
+export type ChangePasswordPayload = {
+  oldPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+};
+
 export const getMe = async () => {
   const response = await axiosInstance.get<ApiEnvelope<AuthUser>>(`${AUTH_API_PREFIX}/me`);
 
   if (response.data?.success && typeof window !== "undefined") {
     localStorage.setItem(AUTH_USER_KEY, JSON.stringify(response.data.data));
   }
+
+  return response.data;
+};
+
+export const updateMe = async (payload: UpdateMePayload) => {
+  const response = await axiosInstance.patch<ApiEnvelope<AuthUser>>(
+    `${AUTH_API_PREFIX}/me`,
+    payload,
+  );
+
+  if (response.data?.success && typeof window !== "undefined") {
+    localStorage.setItem(AUTH_USER_KEY, JSON.stringify(response.data.data));
+  }
+
+  return response.data;
+};
+
+export const changePassword = async (payload: ChangePasswordPayload) => {
+  const response = await axiosInstance.post<ApiEnvelope<null>>(
+    `${AUTH_API_PREFIX}/change-password`,
+    payload,
+  );
 
   return response.data;
 };

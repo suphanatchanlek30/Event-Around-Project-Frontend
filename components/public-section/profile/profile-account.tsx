@@ -1,27 +1,35 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 
-import { getMe, getStoredRefreshToken, getStoredUser, logout } from "@/services";
+import { getMe, getStoredUser } from "@/services";
+import type { AuthUser } from "@/services/authService";
+import EditProfileModal from "@/components/public-section/profile/edit-profile-modal";
 
 export default function ProfileAccount() {
-    const router = useRouter();
     const [isLoadingProfile, setIsLoadingProfile] = useState(true);
-    const [isLoggingOut, setIsLoggingOut] = useState(false);
     const [profileError, setProfileError] = useState("");
-    const [user, setUser] = useState(() => {
-        const storedUser = getStoredUser();
-
-        return {
-            name: storedUser?.fullName ?? "Guest User",
-            email: storedUser?.email ?? "-",
-            role: storedUser?.role ?? "STUDENT",
-            account:
-                "https://i.pinimg.com/control1/1200x/5d/5a/93/5d5a93d474d9ed4ce1866527be582334.jpg",
-            institution: "Event Around Community",
-        };
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [user, setUser] = useState({
+        name: "",
+        email: "",
+        role: "STUDENT" as AuthUser["role"],
+        account:
+            "https://i.pinimg.com/control1/1200x/5d/5a/93/5d5a93d474d9ed4ce1866527be582334.jpg",
+        institution: "Event Around Community",
     });
+
+    const handleProfileUpdated = (updated: AuthUser) => {
+        setUser((prev) => ({
+            ...prev,
+            name: updated.fullName,
+            email: updated.email,
+            role: updated.role,
+            account:
+                updated.profileImageUrl ??
+                "https://i.pinimg.com/control1/1200x/5d/5a/93/5d5a93d474d9ed4ce1866527be582334.jpg",
+        }));
+    };
 
     const stats = {
         joinedCount: 8,
@@ -30,27 +38,22 @@ export default function ProfileAccount() {
     };
 
     const handleEdit = () => {
-        console.log("กดแก้ไขโปรไฟล์")
-    };
-    const handleShare = () => {
-        console.log("กดแชร์โปรไฟล์");
-    };
-
-    const handleLogout = async () => {
-        try {
-            setIsLoggingOut(true);
-            setProfileError("");
-            await logout(getStoredRefreshToken());
-            router.push("/login");
-            router.refresh();
-        } catch {
-            setProfileError("ออกจากระบบไม่สำเร็จ กรุณาลองใหม่");
-        } finally {
-            setIsLoggingOut(false);
-        }
+        setShowEditModal(true);
     };
 
     useEffect(() => {
+        // Hydration-safe: populate from localStorage first, then fetch fresh data
+        const storedUser = getStoredUser();
+        if (storedUser) {
+            setUser((prev) => ({
+                ...prev,
+                name: storedUser.fullName,
+                email: storedUser.email,
+                role: storedUser.role,
+                account: storedUser.profileImageUrl ?? prev.account,
+            }));
+        }
+
         const loadProfile = async () => {
             try {
                 setProfileError("");
@@ -62,6 +65,8 @@ export default function ProfileAccount() {
                         name: response.data.fullName,
                         email: response.data.email,
                         role: response.data.role,
+                        account:
+                            response.data.profileImageUrl ?? prev.account,
                     }));
                 }
             } catch {
@@ -75,6 +80,7 @@ export default function ProfileAccount() {
     }, []);
 
     return (
+        <>
         <div className="w-full">
 
             {/* Account */}
@@ -115,21 +121,6 @@ export default function ProfileAccount() {
                     >
                         แก้ไขโปรไฟล์
                     </button>
-
-                    <button
-                        className="px-5 py-2 bg-gray-200 text-gray-900 font-semibold rounded-xl hover:bg-gray-300 transition"
-                        onClick={handleShare}
-                    >
-                        แชร์โปรไฟล์
-                    </button>
-
-                    <button
-                        className="px-5 py-2 bg-rose-100 text-rose-700 font-semibold rounded-xl hover:bg-rose-200 transition disabled:opacity-70"
-                        onClick={handleLogout}
-                        disabled={isLoggingOut}
-                    >
-                        {isLoggingOut ? "กำลังออกจากระบบ..." : "ออกจากระบบ"}
-                    </button>
                 </div>
                 
                 {/* stats */}
@@ -160,5 +151,14 @@ export default function ProfileAccount() {
 
             </div>
         </div>
+
+        {showEditModal && (
+            <EditProfileModal
+                user={{ name: user.name, email: user.email, account: user.account }}
+                onClose={() => setShowEditModal(false)}
+                onUpdated={handleProfileUpdated}
+            />
+        )}
+        </>
     );
 }
