@@ -5,17 +5,29 @@ import { useEffect, useState } from "react";
 import { FaHeart } from "react-icons/fa";
 import { FiFilter, FiSearch } from "react-icons/fi";
 
-import { EventSummary, getMyEvents } from "@/services";
+import { EventSummary, getMyEvents, getOrganizerEventStats } from "@/services";
+
+type DashboardEventRow = EventSummary & {
+  endTime?: string;
+};
+
+const normalizeStatus = (status: string) => status.trim().toUpperCase();
 
 const getStatusClassName = (status: string) => {
-  if (status === "PUBLISHED") return "bg-emerald-100 text-emerald-700";
-  if (status === "CANCELLED") return "bg-rose-100 text-rose-700";
+  const normalizedStatus = normalizeStatus(status);
+
+  if (normalizedStatus === "PUBLISHED") return "bg-emerald-100 text-emerald-700";
+  if (normalizedStatus === "CANCELLED") return "bg-rose-100 text-rose-700";
+  if (normalizedStatus === "PENDING_APPROVAL") return "bg-amber-100 text-amber-700";
   return "bg-slate-200 text-slate-600";
 };
 
 const getStatusLabel = (status: string) => {
-  if (status === "PUBLISHED") return "เผยแพร่แล้ว";
-  if (status === "CANCELLED") return "ยกเลิก";
+  const normalizedStatus = normalizeStatus(status);
+
+  if (normalizedStatus === "PUBLISHED") return "เผยแพร่แล้ว";
+  if (normalizedStatus === "CANCELLED") return "ยกเลิก";
+  if (normalizedStatus === "PENDING_APPROVAL") return "รออนุมัติ";
   return "ฉบับร่าง";
 };
 
@@ -28,7 +40,7 @@ const formatDate = (dateTime: string) => {
 };
 
 export const RecentEventsTable = () => {
-  const [events, setEvents] = useState<EventSummary[]>([]);
+  const [events, setEvents] = useState<DashboardEventRow[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -41,7 +53,27 @@ export const RecentEventsTable = () => {
           sortBy: "startTime",
           sortOrder: "desc",
         });
-        setEvents(response.data);
+
+        const statsResults = await Promise.allSettled(
+          response.data.map((item) => getOrganizerEventStats(item.eventId))
+        );
+
+        const mergedRows: DashboardEventRow[] = response.data.map((item, index) => {
+          const statsResult = statsResults[index];
+          if (statsResult.status !== "fulfilled") {
+            return item;
+          }
+
+          return {
+            ...item,
+            status: statsResult.value.data.status,
+            savedCount: statsResult.value.data.savedCount,
+            startTime: statsResult.value.data.startTime,
+            endTime: statsResult.value.data.endTime,
+          };
+        });
+
+        setEvents(mergedRows);
       } catch {
         setEvents([]);
       } finally {
@@ -80,7 +112,8 @@ export const RecentEventsTable = () => {
             <tr className="text-left text-xs uppercase tracking-wide text-muted">
               <th className="pb-2">ชื่ออีเวนต์</th>
               <th className="pb-2">สถานะ</th>
-              <th className="pb-2">วันที่</th>
+              <th className="pb-2">เริ่ม</th>
+              <th className="pb-2">สิ้นสุด</th>
               <th className="pb-2">บันทึก</th>
               <th className="pb-2">จัดการ</th>
             </tr>
@@ -88,13 +121,13 @@ export const RecentEventsTable = () => {
           <tbody>
             {isLoading ? (
               <tr>
-                <td colSpan={5} className="py-8 text-center text-sm text-muted">
+                <td colSpan={6} className="py-8 text-center text-sm text-muted">
                   กำลังโหลด...
                 </td>
               </tr>
             ) : events.length === 0 ? (
               <tr>
-                <td colSpan={5} className="py-8 text-center text-sm text-muted">
+                <td colSpan={6} className="py-8 text-center text-sm text-muted">
                   ยังไม่มีกิจกรรม
                 </td>
               </tr>
@@ -130,6 +163,7 @@ export const RecentEventsTable = () => {
                     </span>
                   </td>
                   <td className="p-3 font-medium text-foreground">{formatDate(event.startTime)}</td>
+                  <td className="p-3 font-medium text-foreground">{event.endTime ? formatDate(event.endTime) : "-"}</td>
                   <td className="p-3">
                     <span className="inline-flex items-center gap-1 text-indigo-600 font-semibold">
                       <FaHeart className="text-sm" />

@@ -1,4 +1,12 @@
+"use client";
+
+import { useMemo, useState } from 'react';
+
+import type { ImportErrorItem, ImportEventsResult } from '@/services';
+
 import { ORGANIZER_IMPORTS } from '../constants';
+import type { OrganizerImportItem } from '../types';
+import { ImportUploadModal } from './import-upload-modal';
 
 const getStatusClassName = (status: string) => {
   if (status === 'SUCCESS') {
@@ -21,6 +29,37 @@ const getStatusLabel = (status: string) => {
 };
 
 export const OrganizerImportsPage = () => {
+  const [activeModal, setActiveModal] = useState<'CSV' | 'JSON' | null>(null);
+  const [importHistory, setImportHistory] = useState<OrganizerImportItem[]>(ORGANIZER_IMPORTS);
+  const [latestErrors, setLatestErrors] = useState<ImportErrorItem[]>([]);
+  const [feedbackMessage, setFeedbackMessage] = useState('');
+
+  const latestImport = useMemo(() => importHistory[0], [importHistory]);
+
+  const handleImportCompleted = (result: ImportEventsResult, source: 'CSV' | 'JSON') => {
+    const nextItem: OrganizerImportItem = {
+      importLogId: result.importLogId,
+      source,
+      totalRecords: result.totalRecords,
+      successRecords: result.successRecords,
+      failedRecords: result.failedRecords,
+      createdAt: new Date().toLocaleString('th-TH', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      }),
+      status: result.failedRecords > 0 ? 'PARTIAL_SUCCESS' : 'SUCCESS',
+    };
+
+    setImportHistory((prev) => [nextItem, ...prev.filter((item) => item.importLogId !== nextItem.importLogId)]);
+    setLatestErrors(result.errors || []);
+    setFeedbackMessage(
+      source === 'CSV' ? 'นำเข้าข้อมูล CSV สำเร็จ' : 'นำเข้าข้อมูล JSON สำเร็จ',
+    );
+  };
+
   return (
     <section className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-5 md:py-8 space-y-5">
       <div className="rounded-2xl bg-surface border border-border p-4 md:p-6 shadow-sm">
@@ -34,12 +73,14 @@ export const OrganizerImportsPage = () => {
           <div className="flex items-center gap-2">
             <button
               type="button"
+              onClick={() => setActiveModal('CSV')}
               className="h-10 px-4 rounded-xl border border-border text-sm font-semibold text-foreground hover:bg-surface-muted"
             >
               อัปโหลด CSV
             </button>
             <button
               type="button"
+              onClick={() => setActiveModal('JSON')}
               className="h-10 px-4 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:opacity-95"
             >
               อัปโหลด JSON
@@ -47,6 +88,26 @@ export const OrganizerImportsPage = () => {
           </div>
         </div>
       </div>
+
+      {feedbackMessage ? (
+        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 shadow-sm">
+          {feedbackMessage}
+          {latestImport ? ` • Import #${latestImport.importLogId}` : ''}
+        </div>
+      ) : null}
+
+      {latestErrors.length > 0 ? (
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 shadow-sm">
+          <h2 className="text-lg font-semibold text-foreground">รายการที่นำเข้าไม่ผ่าน</h2>
+          <div className="mt-3 space-y-2">
+            {latestErrors.map((item, index) => (
+              <div key={`${item.row}-${item.field}-${index}`} className="rounded-xl border border-amber-200 bg-white px-3 py-2 text-sm text-amber-800">
+                แถว {item.row} • {item.field} • {item.detail}
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : null}
 
       <div className="rounded-2xl bg-surface border border-border p-4 md:p-6 shadow-sm">
         <h2 className="text-2xl font-semibold text-foreground mb-4">ประวัติการนำเข้า</h2>
@@ -64,7 +125,7 @@ export const OrganizerImportsPage = () => {
               </tr>
             </thead>
             <tbody>
-              {ORGANIZER_IMPORTS.map((item) => (
+              {importHistory.map((item) => (
                 <tr key={item.importLogId} className="border-t border-border text-sm">
                   <td className="px-4 py-4 font-semibold text-foreground">#{item.importLogId}</td>
                   <td className="px-4 py-4 text-muted">{item.source}</td>
@@ -85,6 +146,20 @@ export const OrganizerImportsPage = () => {
           </table>
         </div>
       </div>
+
+      <ImportUploadModal
+        isOpen={activeModal === 'CSV'}
+        mode="CSV"
+        onClose={() => setActiveModal(null)}
+        onCompleted={handleImportCompleted}
+      />
+
+      <ImportUploadModal
+        isOpen={activeModal === 'JSON'}
+        mode="JSON"
+        onClose={() => setActiveModal(null)}
+        onCompleted={handleImportCompleted}
+      />
     </section>
   );
 };
