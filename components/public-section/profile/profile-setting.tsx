@@ -26,7 +26,7 @@ export default function ProfileSetting() {
     const menu = [
         { title: "การแจ้งเตือน", icon: <Bell size={20} /> },
         {
-            title: "ความเป็นส่วนตัวและความปลอดภัย",
+            title: "เปลี่ยนรหัสผ่าน",
             icon: <LockKeyhole size={20} />,
             onClick: () => setShowChangePassword(true),
         },
