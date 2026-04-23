@@ -1,0 +1,196 @@
+"use client";
+
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { FaHeart } from "react-icons/fa";
+import { FiFilter, FiSearch } from "react-icons/fi";
+
+import { EventSummary, getMyEvents, getOrganizerEventStats } from "@/services";
+
+type DashboardEventRow = EventSummary & {
+  endTime?: string;
+};
+
+const normalizeStatus = (status: string) => status.trim().toUpperCase();
+
+const getStatusClassName = (status: string) => {
+  const normalizedStatus = normalizeStatus(status);
+
+  if (normalizedStatus === "PUBLISHED") return "bg-emerald-100 text-emerald-700";
+  if (normalizedStatus === "CANCELLED") return "bg-rose-100 text-rose-700";
+  if (normalizedStatus === "PENDING_APPROVAL") return "bg-amber-100 text-amber-700";
+  return "bg-slate-200 text-slate-600";
+};
+
+const getStatusLabel = (status: string) => {
+  const normalizedStatus = normalizeStatus(status);
+
+  if (normalizedStatus === "PUBLISHED") return "เผยแพร่แล้ว";
+  if (normalizedStatus === "CANCELLED") return "ยกเลิก";
+  if (normalizedStatus === "PENDING_APPROVAL") return "รออนุมัติ";
+  return "ฉบับร่าง";
+};
+
+const formatDate = (dateTime: string) => {
+  return new Date(dateTime).toLocaleDateString("th-TH", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+};
+
+export const RecentEventsTable = () => {
+  const [events, setEvents] = useState<DashboardEventRow[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchRecent = async () => {
+      try {
+        setIsLoading(true);
+        const response = await getMyEvents({
+          page: 1,
+          pageSize: 5,
+          sortBy: "startTime",
+          sortOrder: "desc",
+        });
+
+        const statsResults = await Promise.allSettled(
+          response.data.map((item) => getOrganizerEventStats(item.eventId))
+        );
+
+        const mergedRows: DashboardEventRow[] = response.data.map((item, index) => {
+          const statsResult = statsResults[index];
+          if (statsResult.status !== "fulfilled") {
+            return item;
+          }
+
+          return {
+            ...item,
+            status: statsResult.value.data.status,
+            savedCount: statsResult.value.data.savedCount,
+            startTime: statsResult.value.data.startTime,
+            endTime: statsResult.value.data.endTime,
+          };
+        });
+
+        setEvents(mergedRows);
+      } catch {
+        setEvents([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchRecent();
+  }, []);
+
+  return (
+    <section className="rounded-2xl bg-surface border border-border shadow-sm p-4 md:p-6">
+      <div className="flex items-center justify-between mb-4 md:mb-5">
+        <h2 className="text-xl md:text-2xl font-semibold text-foreground">กิจกรรมล่าสุด</h2>
+        <div className="flex items-center gap-2 text-muted">
+          <button
+            type="button"
+            className="w-8 h-8 rounded-full hover:bg-surface-muted flex items-center justify-center"
+            aria-label="ตัวกรอง"
+          >
+            <FiFilter />
+          </button>
+          <button
+            type="button"
+            className="w-8 h-8 rounded-full hover:bg-surface-muted flex items-center justify-center"
+            aria-label="ค้นหา"
+          >
+            <FiSearch />
+          </button>
+        </div>
+      </div>
+
+      <div className="overflow-x-auto">
+        <table className="min-w-190 w-full border-separate border-spacing-y-2">
+          <thead>
+            <tr className="text-left text-xs uppercase tracking-wide text-muted">
+              <th className="pb-2">ชื่ออีเวนต์</th>
+              <th className="pb-2">สถานะ</th>
+              <th className="pb-2">เริ่ม</th>
+              <th className="pb-2">สิ้นสุด</th>
+              <th className="pb-2">บันทึก</th>
+              <th className="pb-2">จัดการ</th>
+            </tr>
+          </thead>
+          <tbody>
+            {isLoading ? (
+              <tr>
+                <td colSpan={6} className="py-8 text-center text-sm text-muted">
+                  กำลังโหลด...
+                </td>
+              </tr>
+            ) : events.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="py-8 text-center text-sm text-muted">
+                  ยังไม่มีกิจกรรม
+                </td>
+              </tr>
+            ) : (
+              events.map((event) => (
+                <tr key={event.eventId} className="bg-surface-muted/60 rounded-xl">
+                  <td className="p-3 rounded-l-xl">
+                    <div className="flex items-start gap-3">
+                      <div className="h-12 w-18 shrink-0 overflow-hidden rounded-lg bg-surface">
+                        {event.coverImageUrl ? (
+                          <img
+                            src={event.coverImageUrl}
+                            alt={event.title}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center text-[10px] text-muted">
+                            ไม่มีรูป
+                          </div>
+                        )}
+                      </div>
+                      <div>
+                        <p className="font-semibold text-foreground leading-tight">{event.title}</p>
+                        <p className="text-xs text-muted mt-1">{event.locationName ?? "—"}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="p-3">
+                    <span
+                      className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold ${getStatusClassName(event.status)}`}
+                    >
+                      {getStatusLabel(event.status)}
+                    </span>
+                  </td>
+                  <td className="p-3 font-medium text-foreground">{formatDate(event.startTime)}</td>
+                  <td className="p-3 font-medium text-foreground">{event.endTime ? formatDate(event.endTime) : "-"}</td>
+                  <td className="p-3">
+                    <span className="inline-flex items-center gap-1 text-indigo-600 font-semibold">
+                      <FaHeart className="text-sm" />
+                      {(event.savedCount ?? 0).toLocaleString("en-US")}
+                    </span>
+                  </td>
+                  <td className="p-3 rounded-r-xl">
+                    <Link
+                      href={`/organizer/events`}
+                      className="text-sm font-semibold text-link hover:underline"
+                    >
+                      ดูรายละเอียด
+                    </Link>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="mt-4 pt-4 border-t border-border text-center">
+        <Link href="/organizer/events" className="text-sm font-semibold text-link hover:underline">
+          ดูอีเวนต์ทั้งหมด
+        </Link>
+      </div>
+    </section>
+  );
+};
+

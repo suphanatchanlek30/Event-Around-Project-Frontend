@@ -2,7 +2,7 @@
 
 import type { AuthFieldProps } from "@/components/auth-section/types";
 
-export default function AuthField({ field, id }: AuthFieldProps) {
+export default function AuthField({ field, id, value, onChange, error }: AuthFieldProps) {
   return (
     <label className="block space-y-2.5" htmlFor={id}>
       <span className="text-sm font-semibold text-foreground">{field.label}</span>
@@ -12,8 +12,11 @@ export default function AuthField({ field, id }: AuthFieldProps) {
         type={field.type}
         autoComplete={field.autoComplete}
         placeholder={field.placeholder}
+        value={value}
+        onChange={onChange}
         className="w-full rounded-xl border border-border bg-surface-muted px-4 py-3 text-sm text-foreground outline-none transition placeholder:text-muted focus:border-primary focus:bg-surface focus:ring-4 focus:ring-primary/15"
       />
+      {error ? <p className="text-xs text-rose-600">{error}</p> : null}
     </label>
   );
 }

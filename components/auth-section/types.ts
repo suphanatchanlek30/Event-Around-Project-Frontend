@@ -1,6 +1,7 @@
 // components/auth-section/types.ts
 
 import type { ReactNode } from "react";
+import type { ChangeEventHandler } from "react";
 
 export type AuthMode = "login" | "register";
 
@@ -39,4 +40,7 @@ export interface AuthShellProps {
 export interface AuthFieldProps {
   readonly field: AuthFieldConfig;
   readonly id: string;
+  readonly value?: string;
+  readonly onChange?: ChangeEventHandler<HTMLInputElement>;
+  readonly error?: string;
 }
