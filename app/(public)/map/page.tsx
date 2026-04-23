@@ -8,16 +8,19 @@ import { MapFilter } from "@/components/public-section/map/map-filter";
 import MapWrapper from "@/components/public-section/map/map-wrapper";
 import {
   CategoryItem,
+  NearbyEventSummary,
   MapEventSummary,
   getCategories,
   getMapEvents,
+  getNearbyEvents,
 } from "@/services";
 
 const DEFAULT_CENTER: [number, number] = [13.7563, 100.5018];
 
 export default function MapPage() {
   const [categories, setCategories] = useState<CategoryItem[]>([]);
-  const [events, setEvents] = useState<MapEventSummary[]>([]);
+  const [mapEvents, setMapEvents] = useState<MapEventSummary[]>([]);
+  const [nearbyEvents, setNearbyEvents] = useState<NearbyEventSummary[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isLocating, setIsLocating] = useState(false);
 
@@ -41,18 +44,37 @@ export default function MapPage() {
 
   useEffect(() => {
     const loadMapEvents = async () => {
+      const latitude = location?.latitude ?? DEFAULT_CENTER[0];
+      const longitude = location?.longitude ?? DEFAULT_CENTER[1];
+
       try {
         setIsLoading(true);
-        const response = await getMapEvents({
-          latitude: location?.latitude,
-          longitude: location?.longitude,
-          radiusKm,
-          categoryId: activeCategoryId,
-          search: search || undefined,
-        });
-        setEvents(response.data);
+        const [mapResponse, nearbyResponse] = await Promise.allSettled([
+          getMapEvents({
+            latitude,
+            longitude,
+            radiusKm,
+            categoryId: activeCategoryId,
+            search: search || undefined,
+          }),
+          getNearbyEvents({
+            latitude,
+            longitude,
+            radiusKm,
+            categoryId: activeCategoryId,
+            search: search || undefined,
+            page: 1,
+            pageSize: 20,
+            sortBy: "distance",
+            sortOrder: "asc",
+          }),
+        ]);
+
+        setMapEvents(mapResponse.status === "fulfilled" ? mapResponse.value.data : []);
+        setNearbyEvents(nearbyResponse.status === "fulfilled" ? nearbyResponse.value.data : []);
       } catch {
-        setEvents([]);
+        setMapEvents([]);
+        setNearbyEvents([]);
       } finally {
         setIsLoading(false);
       }
@@ -87,20 +109,27 @@ export default function MapPage() {
       return [location.latitude, location.longitude];
     }
 
-    const firstWithCoords = events.find(
+    const firstWithCoords = mapEvents.find(
       (event) => typeof event.latitude === "number" && typeof event.longitude === "number",
     );
     if (firstWithCoords?.latitude && firstWithCoords?.longitude) {
       return [firstWithCoords.latitude, firstWithCoords.longitude];
     }
 
+    const firstNearbyWithCoords = nearbyEvents.find(
+      (event) => typeof event.latitude === "number" && typeof event.longitude === "number",
+    );
+    if (firstNearbyWithCoords?.latitude && firstNearbyWithCoords?.longitude) {
+      return [firstNearbyWithCoords.latitude, firstNearbyWithCoords.longitude];
+    }
+
     return DEFAULT_CENTER;
-  }, [events, location]);
+  }, [mapEvents, nearbyEvents, location]);
 
   return (
     <main className="fixed inset-0 overflow-hidden pt-16 pb-28">
       <div className="absolute inset-0 z-0">
-        <MapWrapper center={mapCenter} events={events} />
+        <MapWrapper center={mapCenter} events={mapEvents} />
       </div>
 
       <div className="absolute top-18 left-0 right-0 z-10 px-4">
@@ -122,7 +151,7 @@ export default function MapPage() {
       </div>
 
       <div className="absolute bottom-15 left-0 w-full z-40">
-        <MapCardList events={events} isLoading={isLoading} />
+        <MapCardList events={nearbyEvents} isLoading={isLoading} />
       </div>
     </main>
   );

@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import MapCard from "./map-card";
-import type { MapEventSummary } from "@/services";
+import type { NearbyEventSummary } from "@/services";
 
 type MapCardListProps = {
-  events: MapEventSummary[];
+  events: NearbyEventSummary[];
   isLoading: boolean;
 };
 

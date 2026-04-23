@@ -3,10 +3,10 @@
 import { Calendar, Bookmark } from "lucide-react";
 import Link from "next/link";
 
-import type { MapEventSummary } from "@/services";
+import type { NearbyEventSummary } from "@/services";
 
 type Props = {
-  event: MapEventSummary;
+  event: NearbyEventSummary;
   isBookmarked: boolean;
   onToggleBookmark: (eventId: number) => void;
 };

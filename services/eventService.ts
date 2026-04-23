@@ -102,7 +102,7 @@ export type MapEventSummary = {
   distanceKm?: number;
   startTime: string;
   endTime?: string;
-  status: EventStatus;
+  status?: EventStatus;
   coverImageUrl?: string;
   category?: EventCategory;
 };

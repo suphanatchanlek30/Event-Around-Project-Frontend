@@ -55,6 +55,7 @@ export function MapFilter({
             <option value={5}>5 กม.</option>
             <option value={10}>10 กม.</option>
             <option value={20}>20 กม.</option>
+            <option value={50}>50 กม.</option>
           </select>
         </div>
       </div>
