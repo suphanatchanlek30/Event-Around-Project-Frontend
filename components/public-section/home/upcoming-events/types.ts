@@ -10,6 +10,16 @@ export interface UpcomingEventsTab {
   hint: string;
 }
 
+export interface UpcomingEventItem {
+  id: string;
+  category: string;
+  title: string;
+  dateLabel: string;
+  timeLabel: string;
+  location: string;
+  accent: 'amber' | 'cyan' | 'violet' | 'emerald' | 'rose' | string;
+}
+
 export interface UpcomingEventsProps {
   className?: string;
   events: EventSummary[];
