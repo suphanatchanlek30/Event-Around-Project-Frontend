@@ -2,7 +2,6 @@
 
 import ProfileAccount from "@/components/public-section/profile/profile-account";
 import ProfileBookmarkActivities from "@/components/public-section/profile/profile-bookmark-activities";
-import ProfileMyActivities from "@/components/public-section/profile/profile-my-activities";
 import ProfileSetting from "@/components/public-section/profile/profile-setting";
 
 export default function ProfilePage() {
@@ -13,7 +12,6 @@ export default function ProfilePage() {
 
                 <ProfileAccount />
                 <ProfileBookmarkActivities />
-                <ProfileMyActivities />
                 <ProfileSetting />
 
             </div>

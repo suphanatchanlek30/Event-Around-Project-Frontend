@@ -19,9 +19,7 @@ export default function ProfileAccount() {
         institution: "Event Around Community",
     });
     const [stats, setStats] = useState({
-        joinedCount: 8,
         bookmarkCount: 0,
-        groupCount: 4,
     });
 
     const handleProfileUpdated = (updated: AuthUser) => {
@@ -133,27 +131,13 @@ export default function ProfileAccount() {
                 </div>
                 
                 {/* stats */}
-                <div className="mt-6 flex gap-3 w-full">
-
-                    <div className="flex-1 bg-white rounded-xl p-5 text-center shadow-sm">
-                        <p className="text-indigo-600 font-bold text-xl">
-                            {stats.joinedCount}
-                        </p>
-                        <p className="text-sm font-medium">เข้าร่วมแล้ว</p>
-                    </div>
+                <div className="mt-6 w-full">
 
                     <div className="flex-1 bg-white rounded-xl p-5 text-center shadow-sm">
                         <p className="text-indigo-600 font-bold text-xl">
                             {stats.bookmarkCount}
                         </p>
                         <p className="text-sm font-medium">บันทึกไว้</p>
-                    </div>
-
-                    <div className="flex-1 bg-white rounded-xl p-5 text-center shadow-sm">
-                        <p className="text-indigo-600 font-bold text-xl">
-                            {stats.groupCount}
-                        </p>
-                        <p className="text-sm font-medium">กลุ่ม</p>
                     </div>
 
                 </div>
