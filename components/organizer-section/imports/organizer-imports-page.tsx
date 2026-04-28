@@ -11,6 +11,7 @@ import type {
 } from '@/services';
 import { getImportHistory } from '@/services';
 
+import { formatThaiDateTime } from '@/lib/thai-datetime';
 import { ImportUploadModal } from './import-upload-modal';
 
 const STATUS_TONE_CLASS: Record<ImportStatusTone, string> = {
@@ -21,7 +22,7 @@ const STATUS_TONE_CLASS: Record<ImportStatusTone, string> = {
 };
 
 const formatDate = (iso: string) =>
-  new Date(iso).toLocaleString('th-TH', {
+  formatThaiDateTime(iso, {
     day: '2-digit',
     month: 'short',
     year: 'numeric',

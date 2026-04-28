@@ -3,10 +3,11 @@
 import { useEffect, useState } from "react";
 import { FiCheckCircle, FiXCircle } from "react-icons/fi";
 
+import { formatThaiDateTime } from "@/lib/thai-datetime";
 import { EventSummary, cancelEvent, getPublicEvents, publishEvent } from "@/services";
 
 const formatDate = (dateTime: string) =>
-  new Date(dateTime).toLocaleDateString("th-TH", {
+  formatThaiDateTime(dateTime, {
     day: "2-digit",
     month: "short",
     year: "numeric",

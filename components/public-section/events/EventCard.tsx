@@ -4,6 +4,7 @@ import { useEffect, useState, type MouseEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Clock, Heart, MapPin } from "lucide-react";
 
+import { formatThaiDateTime } from "@/lib/thai-datetime";
 import { checkSavedEvent, saveEvent, unsaveEvent, type EventSummary } from "@/services";
 
 type EventCardProps = {
@@ -12,8 +13,7 @@ type EventCardProps = {
 };
 
 const formatDateTime = (dateString: string) => {
-  const date = new Date(dateString);
-  return date.toLocaleString("th-TH", {
+  return formatThaiDateTime(dateString, {
     day: "2-digit",
     month: "short",
     hour: "2-digit",

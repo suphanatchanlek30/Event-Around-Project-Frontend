@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { FaHeart } from "react-icons/fa";
 import { FiFilter, FiSearch } from "react-icons/fi";
 
+import { formatThaiDateTime } from "@/lib/thai-datetime";
 import { EventSummary, getMyEvents, getOrganizerEventStats } from "@/services";
 
 type DashboardEventRow = EventSummary & {
@@ -32,7 +33,7 @@ const getStatusLabel = (status: string) => {
 };
 
 const formatDate = (dateTime: string) => {
-  return new Date(dateTime).toLocaleDateString("th-TH", {
+  return formatThaiDateTime(dateTime, {
     day: "2-digit",
     month: "short",
     year: "numeric",

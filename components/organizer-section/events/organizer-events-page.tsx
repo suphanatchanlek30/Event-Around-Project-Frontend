@@ -3,6 +3,7 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { FaCloudUploadAlt, FaHeart, FaMapMarkerAlt } from "react-icons/fa";
 
+import { formatThaiDateTime, toThaiDateTimeLocalValue } from "@/lib/thai-datetime";
 import {
   CategoryItem,
   EventStatus,
@@ -45,7 +46,7 @@ const INITIAL_FORM: EventFormState = {
 };
 
 const formatDate = (dateTime: string) => {
-  return new Date(dateTime).toLocaleDateString("th-TH", {
+  return formatThaiDateTime(dateTime, {
     day: "2-digit",
     month: "short",
     year: "numeric",
@@ -217,8 +218,8 @@ export const OrganizerEventsPage = () => {
         locationName: item.locationName || "",
         latitude: item.latitude ? String(item.latitude) : "",
         longitude: item.longitude ? String(item.longitude) : "",
-        startTime: item.startTime ? item.startTime.slice(0, 16) : "",
-        endTime: item.endTime ? item.endTime.slice(0, 16) : "",
+        startTime: item.startTime ? toThaiDateTimeLocalValue(item.startTime) : "",
+        endTime: item.endTime ? toThaiDateTimeLocalValue(item.endTime) : "",
         categoryId: item.category?.categoryId ? String(item.category.categoryId) : "",
         coverImageUrl: item.coverImageUrl || "",
         status: item.status === "PUBLISHED" ? "PUBLISHED" : "DRAFT",

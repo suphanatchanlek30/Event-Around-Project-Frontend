@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { FaClock, FaMapMarkerAlt, FaUsers } from 'react-icons/fa';
+
+import { formatThaiDateTime } from '@/lib/thai-datetime';
 import type { EventSummary } from '@/services';
 import { FeaturedEventsBadge } from './featured-events-badge';
 
@@ -11,14 +13,11 @@ interface FeaturedEventsMainCardProps {
 }
 
 const formatTimeRange = (startTime: string, endTime: string) => {
-  const start = new Date(startTime);
-  const end = new Date(endTime);
-  return `${start.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' })} - ${end.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' })}`;
+  return `${formatThaiDateTime(startTime, { hour: '2-digit', minute: '2-digit' })} - ${formatThaiDateTime(endTime, { hour: '2-digit', minute: '2-digit' })}`;
 };
 
 const formatDateLabel = (startTime: string) => {
-  const start = new Date(startTime);
-  return `${start.toLocaleDateString('th-TH', { month: 'short' })} ${start.toLocaleDateString('th-TH', { day: '2-digit' })}`;
+  return `${formatThaiDateTime(startTime, { month: 'short' })} ${formatThaiDateTime(startTime, { day: '2-digit' })}`;
 };
 
 export const FeaturedEventsMainCard = ({ event, isLoading = false }: FeaturedEventsMainCardProps) => {

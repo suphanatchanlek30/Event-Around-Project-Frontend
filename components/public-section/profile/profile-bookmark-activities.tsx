@@ -4,10 +4,11 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { MapPin, Bookmark } from "lucide-react";
 
+import { formatThaiDateTime } from "@/lib/thai-datetime";
 import { SavedEventSummary, getSavedEvents, unsaveEvent } from "@/services";
 
 const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleString("th-TH", {
+    return formatThaiDateTime(dateString, {
     day: "2-digit",
     month: "short",
     hour: "2-digit",

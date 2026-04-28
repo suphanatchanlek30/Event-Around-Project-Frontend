@@ -3,6 +3,7 @@
 import { Calendar, Bookmark } from "lucide-react";
 import Link from "next/link";
 
+import { formatThaiDateTime } from "@/lib/thai-datetime";
 import type { NearbyEventSummary } from "@/services";
 
 type Props = {
@@ -13,7 +14,7 @@ type Props = {
 };
 
 const formatDateTime = (dateString: string) => {
-  return new Date(dateString).toLocaleString("th-TH", {
+  return formatThaiDateTime(dateString, {
     day: "2-digit",
     month: "short",
     hour: "2-digit",
