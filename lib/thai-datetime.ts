@@ -3,6 +3,9 @@ const THAI_TIME_ZONE = "Asia/Bangkok";
 
 type DateInput = string | number | Date;
 
+const ISO_NO_TIMEZONE_PATTERN =
+  /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d{1,3})?)?$/;
+
 const thaiDateKeyFormatter = new Intl.DateTimeFormat("en-US", {
   timeZone: THAI_TIME_ZONE,
   year: "numeric",
@@ -20,7 +23,17 @@ const thaiDateTimeInputFormatter = new Intl.DateTimeFormat("en-US", {
   hour12: false,
 });
 
-const toDate = (value: DateInput) => (value instanceof Date ? value : new Date(value));
+const toDate = (value: DateInput) => {
+  if (value instanceof Date) {
+    return value;
+  }
+
+  if (typeof value === "string" && ISO_NO_TIMEZONE_PATTERN.test(value)) {
+    return new Date(`${value}Z`);
+  }
+
+  return new Date(value);
+};
 
 export const formatThaiDateTime = (
   value: DateInput,
