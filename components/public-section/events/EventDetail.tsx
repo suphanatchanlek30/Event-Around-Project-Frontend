@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Calendar, Heart, MapPin, MonitorPlay, Share2 } from "lucide-react";
 
+import { formatThaiDateTime } from "@/lib/thai-datetime";
 import {
   EventDetail as EventDetailData,
   checkSavedEvent,
@@ -22,7 +23,7 @@ type EventDetailProps = {
 };
 
 const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString("th-TH", {
+  return formatThaiDateTime(dateString, {
     day: "2-digit",
     month: "long",
     year: "numeric",
@@ -30,7 +31,7 @@ const formatDate = (dateString: string) => {
 };
 
 const formatTime = (dateString: string) => {
-  return new Date(dateString).toLocaleTimeString("th-TH", {
+  return formatThaiDateTime(dateString, {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,

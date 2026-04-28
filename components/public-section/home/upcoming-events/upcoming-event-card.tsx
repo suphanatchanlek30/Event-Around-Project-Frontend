@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { FaCalendarAlt, FaMapMarkerAlt } from 'react-icons/fa';
+
+import { formatThaiDateTime } from '@/lib/thai-datetime';
 import type { EventSummary } from '@/services';
 
 interface UpcomingEventCardProps {
@@ -9,14 +11,14 @@ interface UpcomingEventCardProps {
 }
 
 const formatDateLabel = (startTime: string) => {
-  return new Date(startTime).toLocaleDateString('th-TH', {
+  return formatThaiDateTime(startTime, {
     day: '2-digit',
     month: 'short',
   });
 };
 
 const formatTimeLabel = (startTime: string) => {
-  return new Date(startTime).toLocaleTimeString('th-TH', {
+  return formatThaiDateTime(startTime, {
     hour: '2-digit',
     minute: '2-digit',
   });

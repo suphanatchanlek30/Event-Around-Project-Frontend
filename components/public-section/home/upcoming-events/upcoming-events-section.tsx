@@ -3,17 +3,11 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+
+import { isSameThaiDay } from '@/lib/thai-datetime';
 import { UpcomingEventCard } from './upcoming-event-card';
 import { UPCOMING_EVENTS_TABS } from './constants';
 import { UpcomingEventsProps, UpcomingEventsTabKey } from './types';
-
-const isSameDay = (left: Date, right: Date) => {
-  return (
-    left.getFullYear() === right.getFullYear() &&
-    left.getMonth() === right.getMonth() &&
-    left.getDate() === right.getDate()
-  );
-};
 
 export const UpcomingEventsSection = ({ className = '', events, isLoading = false }: UpcomingEventsProps) => {
   const [activeTab, setActiveTab] = useState<UpcomingEventsTabKey>('all');
@@ -24,7 +18,7 @@ export const UpcomingEventsSection = ({ className = '', events, isLoading = fals
     weekAhead.setDate(now.getDate() + 7);
 
     if (activeTab === 'today') {
-      return events.filter((event) => isSameDay(new Date(event.startTime), now));
+      return events.filter((event) => isSameThaiDay(event.startTime, now));
     }
 
     if (activeTab === 'week') {

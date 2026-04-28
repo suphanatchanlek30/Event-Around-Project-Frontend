@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { FaArrowRight } from 'react-icons/fa';
+
+import { formatThaiDateTime } from '@/lib/thai-datetime';
 import type { EventSummary } from '@/services';
 
 interface FeaturedEventsListItemProps {
@@ -9,7 +11,7 @@ interface FeaturedEventsListItemProps {
 }
 
 const formatDateTime = (startTime: string) => {
-  return new Date(startTime).toLocaleString('th-TH', {
+  return formatThaiDateTime(startTime, {
     day: '2-digit',
     month: 'short',
     hour: '2-digit',
